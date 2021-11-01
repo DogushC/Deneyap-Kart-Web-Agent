@@ -35,6 +35,21 @@ def main():
     thread = threading.Thread(target=sysIconThread)
     thread.start()
 
+
+    Data.config = createConfig()
+
+    logFile = f"{Data.config['LOG_PATH']}\deneyap.log"
+    logging.basicConfig(filename=logFile, filemode='w', format='%(asctime)s-%(process)d-%(thread)d   %(levelno)d      %(message)s(%(funcName)s-%(lineno)d)', level=logging.INFO)
+    logging.info('----------------------- Program Start -----------------------')
+
+
+    if Data.config['runSetup']:
+        setupDeneyap()
+
+    createFolder(Data.config["LOG_PATH"])
+    createFolder(Data.config["TEMP_PATH"])
+
+
     start_server = websockets.serve(Websocket, 'localhost', 49182)
     asyncio.get_event_loop().run_until_complete(start_server)
     logging.info("Main Websocket is ready")
@@ -85,20 +100,6 @@ if __name__ == '__main__':
 
     # Pyinstaller fix
     multiprocessing.freeze_support()
-
-    Data.config = createConfig()
-
-    logFile = f"{Data.config['LOG_PATH']}\deneyap.log"
-    logging.basicConfig(filename=logFile, filemode='w', format='%(asctime)s-%(process)d-%(thread)d   %(levelno)d      %(message)s(%(funcName)s-%(lineno)d)', level=logging.INFO)
-    logging.info('----------------------- Program Start -----------------------')
-
-
-    if Data.config['runSetup']:
-        setupDeneyap()
-
-    createFolder(Data.config["LOG_PATH"])
-    createFolder(Data.config["TEMP_PATH"])
-
 
     try:
         main()
