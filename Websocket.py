@@ -1,8 +1,8 @@
 import asyncio
 import json
-from DeviceChecker import DeviceChecker
-from utils import Data
-from Board import Board
+from .DeviceChecker import DeviceChecker
+from .utils import Data
+from .Board import Board
 from multiprocessing import Manager
 import logging
 
@@ -21,7 +21,14 @@ class aobject(object):
 
 
 class Websocket(aobject):
+    """
+    Ana websocket'in çalıştığı sınıf, her bir sites bağlantısı için bir websocket objesi oluşturulur.
 
+
+    websocket(websocket): web tarafı ile yapılan socket bağlantısının objesi
+
+    path(str):
+    """
     async def __init__(self, websocket, path):
         logging.info(f"Websocket object is created")
 
@@ -35,6 +42,12 @@ class Websocket(aobject):
         await self.mainLoop()
 
     async def readAndSend(self, pipe):
+        """
+        daha önceden açılmış olan pipe'tan  veriyi okur ve websocket aracılığı ile web tarafına gönderir.
+
+
+        pipe(subprocess.Popen()): verinin okunacağı pipe
+        """
         allText = ""
         for c in iter(lambda: pipe.stdout.read(1), b''):
             t = c.decode("utf-8")
@@ -52,6 +65,12 @@ class Websocket(aobject):
         await self.websocket.send(bodyToSend)
 
     async def commandParser(self, body):
+        """
+        web tarfından gelen bilgiyi ilgili fonksiyonlara yönlendirir.
+
+
+        body(dict): Json formatında gelen bir dictionary, web tarafından gelen komutu ve ilgili alanları barındırır
+        """
         command = body['command']
 
         if command == None:
@@ -69,6 +88,9 @@ class Websocket(aobject):
 
 
     async def sendResponse(self):
+        """
+        Web tarafına mesajın başarı ile alındığını geri bildirir.
+        """
         logging.info(f"Main Websocket sending response back")
         bodyToSend = {"command": "response"}
         bodyToSend = json.dumps(bodyToSend)
@@ -76,6 +98,14 @@ class Websocket(aobject):
 
 
     async def upload(self, ID, code):
+        """
+        Kodun karta yüklenmesi için Board.uploadCode() fonksiyonunu çalştıran fonksiyon
+
+
+        ID (int): kodun yükleneceği kartın ID'si
+
+        code (str): kodun kendisi.
+        """
         pipe = Data.boards[ID].uploadCode(code)
         bodyToSend = {"command": "cleanLog", "log": "Uploading Code...\n"}
         bodyToSend = json.dumps(bodyToSend)
@@ -83,6 +113,14 @@ class Websocket(aobject):
         await self.readAndSend(pipe)
 
     async def compile(self, ID, code):
+        """
+        Kodun derlenmesi için Board.compileCode() fonksiyonunu çalştıran fonksiyon
+
+
+        ID (int): kodun yükleneceği kartın ID'si
+
+        code (str): kodun kendisi.
+        """
         pipe = Data.boards[ID].compileCode(code)
 
         bodyToSend = {"command": "cleanLog", "log": "Compling Code...\n"}
@@ -91,10 +129,17 @@ class Websocket(aobject):
         await self.readAndSend(pipe)
 
     async def getBoards(self):
+        """
+        Bilgisayara takılı olan güncel kartları web tarafına gönderir.
+        """
         Board.refreshBoards()
         await Board.sendBoardInfo(self.websocket)
 
     async def mainLoop(self):
+        """
+        Ana döngü, her döngüde, web tarafından mesaj gelip gelmediğini kontrol eder, veri geldiyse commandParser()'a gönderir,
+        aksi halde queue'de ki komutları kontrol eder.
+        """
         try:
             while True:
                 body = {"command":None}

@@ -1,3 +1,6 @@
+"""
+İndirildiği anda ki konfigürasyon ayarları
+"""
 import appdirs
 
 deneyapKart = "deneyap:esp32:dydk_mpv10"

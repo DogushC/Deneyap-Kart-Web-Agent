@@ -1,26 +1,30 @@
+"""
+Main dosyası, Programın giriş noktası
+"""
+
 import asyncio
 import websockets
-from utils import Data
-from Websocket import Websocket
-from SerialMonitorWebsocket import SerialMonitorWebsocket
+from .utils import Data
+from .Websocket import Websocket
+from .SerialMonitorWebsocket import SerialMonitorWebsocket
 import multiprocessing
 import logging
 from pystray import MenuItem, Icon
 from PIL import Image
 import threading
 import _thread
-import config as InitialConfig
-from utils import createFolder, setupDeneyap
+from . import config as InitialConfig
+from .utils import createFolder, setupDeneyap
 import os
 import appdirs
 import json
 from pathlib import Path
 import sys
 
-async def waitThread(thread):
-    yield thread.join()
-
 def sysIconThread():
+    """
+    Ayrı bir thread'de system tray için gui oluşturur.
+    """
     def stop():
         logging.info("Exiting through icon")
         icon.stop()
@@ -32,6 +36,9 @@ def sysIconThread():
     icon.run()
 
 def main():
+    """
+    Programın ilk çalışan fonksiyonu, system tray gui'ını, configurasyonu ve websocket server'larını çalıştırır
+    """
     thread = threading.Thread(target=sysIconThread)
     thread.start()
 
@@ -71,6 +78,9 @@ def main():
 
 
 def createConfig():
+    """
+    İlk çalışmada config dosyasını oluşturur, eğer var ise, programa yükler.
+    """
     Path(InitialConfig.LOG_PATH).mkdir(parents=True, exist_ok=True)
 
     isConfigExists = os.path.exists(f'{InitialConfig.CONFIG_PATH}\config.json')
