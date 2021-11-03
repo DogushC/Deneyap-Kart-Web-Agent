@@ -1,8 +1,8 @@
 import asyncio
 import json
-from .DeviceChecker import DeviceChecker
-from .utils import Data
-from .Board import Board
+from DeviceChecker import DeviceChecker
+from utils import Data
+from Board import Board
 from multiprocessing import Manager
 import logging
 

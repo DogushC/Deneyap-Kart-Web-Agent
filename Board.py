@@ -1,6 +1,6 @@
 import random
-from .utils import Data, createInoFile, executeCliPipe, executeCli
-from . import config
+from utils import Data, createInoFile, executeCliPipe, executeCli
+import config
 import json
 import logging
 

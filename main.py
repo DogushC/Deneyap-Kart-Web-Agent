@@ -4,22 +4,23 @@ Main dosyası, Programın giriş noktası
 
 import asyncio
 import websockets
-from .utils import Data
-from .Websocket import Websocket
-from .SerialMonitorWebsocket import SerialMonitorWebsocket
+from utils import Data
+from Websocket import Websocket
+from SerialMonitorWebsocket import SerialMonitorWebsocket
+from pathlib import Path
 import multiprocessing
 import logging
 from pystray import MenuItem, Icon
 from PIL import Image
 import threading
 import _thread
-from . import config as InitialConfig
-from .utils import createFolder, setupDeneyap
+import config as InitialConfig
+from utils import createFolder, setupDeneyap
 import os
 import appdirs
 import json
-from pathlib import Path
 import sys
+
 
 def sysIconThread():
     """
