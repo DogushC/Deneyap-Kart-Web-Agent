@@ -50,7 +50,7 @@ class DeviceChecker:
             if runner:
                 old_devices, changed = self.check_new_devices(old_devices)
                 if changed:
-                    logging.info(f"Found new device")
+                    logging.info(f"Change on devices")
                     queue.put({"sender":"deviceChecker", "command":"getBoards"})
 
             time.sleep(1)

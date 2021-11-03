@@ -121,7 +121,7 @@ class SerialMonitorWebsocket(aobject):
         if line == "":
             return
         # print(line, end="")"
-        bodyToSend = {"command":"log", "log":line}
+        bodyToSend = {"command":"serialLog", "log":line}
         bodyToSend = json.dumps(bodyToSend)
         await self.websocket.send(bodyToSend)
 

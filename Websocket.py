@@ -52,14 +52,14 @@ class Websocket(aobject):
         for c in iter(lambda: pipe.stdout.read(1), b''):
             t = c.decode("utf-8")
             allText += t
-            bodyToSend = {"command": "log", "log": t}
+            bodyToSend = {"command": "consoleLog", "log": t}
             bodyToSend = json.dumps(bodyToSend)
             await self.websocket.send(bodyToSend)
             await asyncio.sleep(0)
 
         t = pipe.communicate()[1].decode("utf-8")
         allText += t
-        bodyToSend = {"command": "log", "log": t}
+        bodyToSend = {"command": "consoleLog", "log": t}
         bodyToSend = json.dumps(bodyToSend)
         logging.info(f"Pipe output {allText}")
         await self.websocket.send(bodyToSend)
@@ -107,7 +107,7 @@ class Websocket(aobject):
         code (str): kodun kendisi.
         """
         pipe = Data.boards[ID].uploadCode(code)
-        bodyToSend = {"command": "cleanLog", "log": "Uploading Code...\n"}
+        bodyToSend = {"command": "cleanConsoleLog", "log": "Uploading Code...\n"}
         bodyToSend = json.dumps(bodyToSend)
         await self.websocket.send(bodyToSend)
         await self.readAndSend(pipe)
@@ -123,7 +123,7 @@ class Websocket(aobject):
         """
         pipe = Data.boards[ID].compileCode(code)
 
-        bodyToSend = {"command": "cleanLog", "log": "Compling Code...\n"}
+        bodyToSend = {"command": "cleanConsoleLog", "log": "Compling Code...\n"}
         bodyToSend = json.dumps(bodyToSend)
         await self.websocket.send(bodyToSend)
         await self.readAndSend(pipe)
