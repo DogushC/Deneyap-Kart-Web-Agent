@@ -107,7 +107,7 @@ class Websocket(aobject):
         code (str): kodun kendisi.
         """
         pipe = Data.boards[ID].uploadCode(code)
-        bodyToSend = {"command": "cleanConsoleLog", "log": "Uploading Code...\n"}
+        bodyToSend = {"command": "cleanConsoleLog", "log": ""}
         bodyToSend = json.dumps(bodyToSend)
         await self.websocket.send(bodyToSend)
         await self.readAndSend(pipe)

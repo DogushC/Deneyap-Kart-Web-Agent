@@ -1,7 +1,6 @@
 import asyncio
 import json
-import sys
-import time
+import traceback
 
 import serial
 import logging
@@ -34,7 +33,7 @@ class SerialMonitorWebsocket(aobject):
 
         self.websocket = websocket
         self.serialOpen = False
-
+        self.ser = None
         await self.mainLoop()
 
     async def commandParser(self, body):
@@ -84,7 +83,6 @@ class SerialMonitorWebsocket(aobject):
         """
         logging.info(f"Opening serial monitor")
         if not self.serialOpen:
-
             self.serialOpen = True
             self.ser = serial.Serial(
                 port=port,
@@ -108,7 +106,7 @@ class SerialMonitorWebsocket(aobject):
         Serial monitörü kapatır
         """
         logging.info(f"Closing serial monitor")
-        if self.serialOpen:
+        if self.serialOpen and self.ser != None:
             self.ser.close()
         self.serialOpen = False
 
@@ -116,26 +114,26 @@ class SerialMonitorWebsocket(aobject):
         """
         Serial monitörü okur ve websocket aracılığı ile web tarafına gönderir
         """
-        waiting = self.ser.in_waiting
-        try:
-            line = self.ser.read(waiting).decode("utf-8")
-        except:
-            return
-        if line == "":
-            return
-        # print(line, end="")"
-        bodyToSend = {"command":"serialLog", "log":line}
-        bodyToSend = json.dumps(bodyToSend)
-        await self.websocket.send(bodyToSend)
+        if self.serialOpen and self.ser != None:
+            waiting = self.ser.in_waiting
+            try:
+                line = self.ser.read(waiting).decode("utf-8")
+            except:
+                return
+            if line == "":
+                return
+            # print(line, end="")"
+            bodyToSend = {"command":"serialLog", "log":line}
+            bodyToSend = json.dumps(bodyToSend)
+            await self.websocket.send(bodyToSend)
 
     async def mainLoop(self):
         """
         Ana döngü, her döngüde, web tarafından mesaj gelip gelmediğini kontrol eder, veri geldiyse commandParser()'a gönderir,
         aksi halde serial monitör açık ise serialLog()'u çalıştırır
         """
-        try:
-            while True:
-
+        while True:
+            try:
                 if not self.serialOpen:
                     await asyncio.sleep(.3)
 
@@ -151,7 +149,11 @@ class SerialMonitorWebsocket(aobject):
                         await self.serialLog()
 
                 await self.commandParser(body)
-        except:
-            logging.info("Closing Serial Monitor.")
-        finally:
-            sys.exit()
+
+            except Exception as e:
+                logging.info("Serial Monitor Error")
+                logging.exception("Because!: ")
+                traceback.print_exc()
+                bodyToSend = {"command": "serialLog", "log": str(e)+"\n"}
+                bodyToSend = json.dumps(bodyToSend)
+                await self.websocket.send(bodyToSend)
