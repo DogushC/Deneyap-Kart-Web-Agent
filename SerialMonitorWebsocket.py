@@ -1,5 +1,7 @@
 import asyncio
 import json
+import time
+
 import serial
 import logging
 
@@ -132,6 +134,10 @@ class SerialMonitorWebsocket(aobject):
         """
         try:
             while True:
+
+                if not self.serialOpen:
+                    time.sleep(.2)
+
                 body = {"command":None}
 
                 try:
@@ -144,6 +150,8 @@ class SerialMonitorWebsocket(aobject):
                         await self.serialLog()
 
                 await self.commandParser(body)
+        except Exception as e:
+            print(e)
 
         finally:
             print("Closing Thread!!")
