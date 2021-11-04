@@ -10,6 +10,7 @@ class Data:
     boards  = {}
     threads = []
     config = {}
+    websockets = []
 
 def executeCli(command):
     """

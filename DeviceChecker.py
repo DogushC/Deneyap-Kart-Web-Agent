@@ -15,10 +15,10 @@ class DeviceChecker:
     def __init__(self, queue):
         self.queue = queue
         self.startStopQueue = Queue()
-        process = Process(target=self.queuer, args=(self.queue, self.startStopQueue))
+        self.process = Process(target=self.queuer, args=(self.queue, self.startStopQueue))
         logging.info(f"Starting process for DeviceChekcer with PID:{process.pid}")
 
-        process.start()
+        self.process.start()
 
     def queuer(self, queue, startStopQueue):
         """

@@ -31,7 +31,7 @@ class Websocket(aobject):
     """
     async def __init__(self, websocket, path):
         logging.info(f"Websocket object is created")
-
+        Data.websockets.append(self)
         self.websocket = websocket
 
         self.queue = Manager().Queue()
@@ -135,6 +135,12 @@ class Websocket(aobject):
         Board.refreshBoards()
         await Board.sendBoardInfo(self.websocket)
 
+    def closeSocket(self):
+        logging.info("Closing DeviceChecker")
+        self.deviceChecker.terminate()
+        self.deviceChecker.process.join()
+        logging.info("DeviceChecker Closed")
+
     async def mainLoop(self):
         """
         Ana döngü, her döngüde, web tarafından mesaj gelip gelmediğini kontrol eder, veri geldiyse commandParser()'a gönderir,
@@ -155,4 +161,4 @@ class Websocket(aobject):
                 await self.commandParser(body)
 
         finally:
-            self.deviceChecker.stop()
+            self.deviceChecker.terminate()
