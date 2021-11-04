@@ -137,7 +137,7 @@ class SerialMonitorWebsocket(aobject):
             while True:
 
                 if not self.serialOpen:
-                    time.sleep(.2)
+                    await asyncio.sleep(.3)
 
                 body = {"command":None}
 

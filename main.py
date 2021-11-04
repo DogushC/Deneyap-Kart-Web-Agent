@@ -4,6 +4,7 @@ Main dosyası, Programın giriş noktası
 
 import asyncio
 import websockets
+from websockets.legacy import server
 from utils import Data
 from Websocket import Websocket
 from SerialMonitorWebsocket import SerialMonitorWebsocket

@@ -54,7 +54,6 @@ class DeviceChecker:
                     queue.put({"sender":"deviceChecker", "command":"getBoards"})
 
             time.sleep(1)
-
     def start(self):
         """
         querer fonksiyonun içerisinde ki while döngüsünün çalışmasını sağlar
