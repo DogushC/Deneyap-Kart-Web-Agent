@@ -16,7 +16,7 @@ class DeviceChecker:
         self.queue = queue
         self.startStopQueue = Queue()
         self.process = Process(target=self.queuer, args=(self.queue, self.startStopQueue))
-        logging.info(f"Starting process for DeviceChekcer with PID:{process.pid}")
+        logging.info(f"Starting process for DeviceChekcer with PID:{self.process.pid}")
 
         self.process.start()
 
