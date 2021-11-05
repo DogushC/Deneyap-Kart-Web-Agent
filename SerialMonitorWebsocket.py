@@ -1,9 +1,10 @@
 import asyncio
 import json
 import traceback
-
+from utils import Data
 import serial
 import logging
+import config
 
 class aobject(object):
     """Inheriting this class allows you to define an async __init__.
@@ -84,13 +85,24 @@ class SerialMonitorWebsocket(aobject):
         logging.info(f"Opening serial monitor")
         if not self.serialOpen:
             self.serialOpen = True
-            self.ser = serial.Serial(
-                port=port,
-                baudrate=baudRate,
-                parity=serial.PARITY_NONE,
-                stopbits=serial.STOPBITS_ONE,
-                bytesize=serial.EIGHTBITS,
-                timeout=0)
+
+            self.ser = serial.Serial()
+            self.ser.baudrate = baudRate
+            self.ser.port = port
+
+            if Data.boards[port].fqbn == config.deneyapKart:
+                self.ser.setDTR(False)
+                self.ser.setRTS(False)
+
+            self.ser.open()
+
+            # self.ser = serial.Serial(
+            #     port=port,
+            #     baudrate=baudRate,
+            #     parity=serial.PARITY_NONE,
+            #     stopbits=serial.STOPBITS_ONE,
+            #     bytesize=serial.EIGHTBITS,
+            #     timeout=0)
 
     async def sendResponse(self):
         """
