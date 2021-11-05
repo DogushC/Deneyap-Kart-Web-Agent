@@ -79,9 +79,9 @@ class Websocket(aobject):
             await self.sendResponse()
 
         if command == "upload":
-            await self.upload(body['ID'], body["code"])
+            await self.upload(body['port'], body["code"])
         elif command == "compile":
-            await self.compile(body['ID'], body["code"])
+            await self.compile(body['port'], body["code"])
         elif command == "getBoards":
             await self.getBoards()
 
@@ -97,7 +97,7 @@ class Websocket(aobject):
         await self.websocket.send(bodyToSend)
 
 
-    async def upload(self, ID, code):
+    async def upload(self, port, code):
         """
         Kodun karta yüklenmesi için Board.uploadCode() fonksiyonunu çalştıran fonksiyon
 
@@ -106,13 +106,13 @@ class Websocket(aobject):
 
         code (str): kodun kendisi.
         """
-        pipe = Data.boards[ID].uploadCode(code)
+        pipe = Data.boards[port].uploadCode(code)
         bodyToSend = {"command": "cleanConsoleLog", "log": ""}
         bodyToSend = json.dumps(bodyToSend)
         await self.websocket.send(bodyToSend)
         await self.readAndSend(pipe)
 
-    async def compile(self, ID, code):
+    async def compile(self, port, code):
         """
         Kodun derlenmesi için Board.compileCode() fonksiyonunu çalştıran fonksiyon
 
@@ -121,7 +121,7 @@ class Websocket(aobject):
 
         code (str): kodun kendisi.
         """
-        pipe = Data.boards[ID].compileCode(code)
+        pipe = Data.boards[port].compileCode(code)
 
         bodyToSend = {"command": "cleanConsoleLog", "log": "Compling Code...\n"}
         bodyToSend = json.dumps(bodyToSend)
@@ -159,6 +159,7 @@ class Websocket(aobject):
                         body = self.queue.get()
 
                 await self.commandParser(body)
-
+        except:
+            logging.exception("Websocket Mainloop: ")
         finally:
             self.deviceChecker.terminate()

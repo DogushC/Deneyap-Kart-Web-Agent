@@ -52,11 +52,11 @@ class SerialMonitorWebsocket(aobject):
             await self.sendResponse()
 
         if command == "upload":
-            self.closeSerialMonitor()
+            await self.closeSerialMonitor()
         elif command == "openSerialMonitor":
             self.openSerialMontor(body["port"], body["baudRate"])
         elif command == "closeSerialMonitor":
-            self.closeSerialMonitor()
+            await self.closeSerialMonitor()
         elif command == "serialWrite":
             self.serialWrite(body["text"])
 
@@ -101,13 +101,17 @@ class SerialMonitorWebsocket(aobject):
         logging.info(f"SerialMonitorWebsocket sending response back")
         await self.websocket.send(bodyToSend)
 
-    def closeSerialMonitor(self):
+    async def closeSerialMonitor(self):
         """
         Serial monitörü kapatır
         """
         logging.info(f"Closing serial monitor")
         if self.serialOpen and self.ser != None:
             self.ser.close()
+            bodyToSend = {"command":"closeSerialMonitor"}
+            bodyToSend = json.dumps(bodyToSend)
+            await self.websocket.send(bodyToSend)
+
         self.serialOpen = False
 
     async def serialLog(self):
@@ -115,9 +119,12 @@ class SerialMonitorWebsocket(aobject):
         Serial monitörü okur ve websocket aracılığı ile web tarafına gönderir
         """
         if self.serialOpen and self.ser != None:
-            waiting = self.ser.in_waiting
             try:
+                waiting = self.ser.in_waiting
                 line = self.ser.read(waiting).decode("utf-8")
+            except serial.SerialException:
+                await self.closeSerialMonitor()
+                return
             except:
                 return
             if line == "":

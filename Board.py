@@ -21,8 +21,7 @@ class Board:
         self.boardName = boardName
         self.fqbn = fqbn
         self.port = port
-        self.ID = random.randint(1000000, 9999999)
-        logging.info(f"Board with Name:{boardName}, FQBN:{fqbn}, Port:{port}, ID:{self.ID} is created")
+        logging.info(f"Board with Name:{boardName}, FQBN:{fqbn}, Port:{port} is created")
 
     def uploadCode(self, code, fqbn = None):
         """
@@ -33,7 +32,7 @@ class Board:
 
         fqbn (str): kodun arduino-cli tarafında ki adı
         """
-        logging.info(f"Uploading code to {self.ID}")
+        logging.info(f"Uploading code to {self.boardName}:{self.port}")
         fqbn = fqbn if fqbn != None else self.fqbn
         createInoFile(code)
         pipe = executeCliPipe(f"compile --port {self.port} --upload --fqbn {fqbn} {config.TEMP_PATH}/tempCode")
@@ -48,7 +47,7 @@ class Board:
 
         fqbn (str): kodun arduino-cli tarafında ki adı
         """
-        logging.info(f"Compiling code for {self.ID}")
+        logging.info(f"Compiling code for {self.boardName}:{self.port}")
         fqbn = fqbn if fqbn != None else self.fqbn
         createInoFile(code)
         pipe = executeCliPipe(f"compile --fqbn {fqbn} {config.TEMP_PATH}/tempCode")
@@ -74,7 +73,7 @@ class Board:
             boardPort = boardJson["port"]["address"]
             logging.info(f"Found board with Name:{boardName}, FQBN:{boardId}, Port:{boardPort}")
             board = Board(boardName, boardId, boardPort)
-            Data.boards[board.ID] = board
+            Data.boards[boardPort] = board
 
     @staticmethod
     async def sendBoardInfo(websocket):
@@ -86,11 +85,11 @@ class Board:
         """
         body = {"command": "returnBoards", "boards": []}
         for k, v in Data.boards.items():
-            body['boards'].append({"boardName": v.boardName, "port": v.port, "ID": v.ID})
+            body['boards'].append({"boardName": v.boardName, "port": v.port})
         body = json.dumps(body)
         logging.info(f"Sending {body}")
         await websocket.send(body)
 
 
     def __repr__(self):
-        return f"{self.boardName} on port: {self.port} with fqbn of {self.fqbn} and ID of :{self.ID}"
+        return f"{self.boardName} on port: {self.port} with fqbn of {self.fqbn}"
