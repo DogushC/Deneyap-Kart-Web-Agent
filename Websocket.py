@@ -1,5 +1,7 @@
 import asyncio
 import json
+
+import config
 from DeviceChecker import DeviceChecker
 from utils import Data
 from Board import Board
@@ -84,7 +86,8 @@ class Websocket(aobject):
             await self.compile(body['port'], body["code"])
         elif command == "getBoards":
             await self.getBoards()
-
+        elif command == "getVersion":
+            await self.getVersion()
 
 
     async def sendResponse(self):
@@ -111,6 +114,14 @@ class Websocket(aobject):
         bodyToSend = json.dumps(bodyToSend)
         await self.websocket.send(bodyToSend)
         await self.readAndSend(pipe)
+
+    async def getVersion(self):
+        """
+        Versiyonu Webe Gönderir
+        """
+        bodyToSend = {"command": "returnVersion", "version": config.version}
+        bodyToSend = json.dumps(bodyToSend)
+        await self.websocket.send(bodyToSend)
 
     async def compile(self, port, code):
         """
