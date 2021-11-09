@@ -1,0 +1,4 @@
+$TestCodeSigningCert = New-SelfSignedCertificate -DnsName https://deneyapkart.org -Type CodeSigning -CertStoreLocation Cert:\CurrentUser\My
+Export-Certificate -FilePath exported_cert.cer -Cert $TestCodeSigningCert
+Import-Certificate -FilePath exported_cert.cer -CertStoreLocation Cert:\CurrentUser\Root
+Set-AuthenticodeSignature -Certificate $TestCodeSigningCert -FilePath C:\Users\kinkintama\Desktop\DeneyapKartSetup\DeneyapKartWebSetupv0.9.1-beta.exe
