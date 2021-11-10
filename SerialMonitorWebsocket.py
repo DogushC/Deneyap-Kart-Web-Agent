@@ -90,7 +90,7 @@ class SerialMonitorWebsocket(aobject):
             self.ser.baudrate = baudRate
             self.ser.port = port
 
-            if Data.boards[port].fqbn == config.deneyapKart:
+            if Data.boards[port].fqbn != config.deneyapMini:
                 self.ser.setDTR(False)
                 self.ser.setRTS(False)
 

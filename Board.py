@@ -67,8 +67,8 @@ class Board:
                 boardName = boardJson["matching_boards"][0]["name"]  # TODO investigate why index 0?
                 boardId = boardJson["matching_boards"][0]["fqbn"]
             else:
-                boardName = "Deneyap Kart"
-                boardId = "deneyap:esp32:dydk_mpv10"
+                boardName = "Unknown"
+                boardId = ""
 
             boardPort = boardJson["port"]["address"]
             logging.info(f"Found board with Name:{boardName}, FQBN:{boardId}, Port:{boardPort}")
