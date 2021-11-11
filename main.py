@@ -5,6 +5,8 @@ Main dosyası, Programın giriş noktası
 import asyncio
 import websockets
 from websockets.legacy import server
+
+import config
 from utils import Data
 from Websocket import Websocket
 from SerialMonitorWebsocket import SerialMonitorWebsocket
@@ -90,6 +92,7 @@ def createConfig():
         configFileData = {
                 "deneyapKart" : "deneyap:esp32:dydk_mpv10",
                 "deneyapMini" : "deneyap:esp32:dym_mpv10",
+                "version": InitialConfig.version,
 
                 "TEMP_PATH" : f"{appdirs.user_data_dir()}\DeneyapKartWeb\Temp",
                 "CONFIG_PATH" : f"{appdirs.user_data_dir()}\DeneyapKartWeb",
@@ -103,6 +106,21 @@ def createConfig():
         with open(f"{appdirs.user_data_dir()}\DeneyapKartWeb\config.json", "r") as configFile:
             configFileDataString = configFile.read()
             configFileData = json.loads(configFileDataString)
+
+            if (configFileData['version'] != InitialConfig.version):
+                configFileData = {
+                    "deneyapKart": "deneyap:esp32:dydk_mpv10",
+                    "deneyapMini": "deneyap:esp32:dym_mpv10",
+                    "version": InitialConfig.version,
+
+                    "TEMP_PATH": f"{appdirs.user_data_dir()}\DeneyapKartWeb\Temp",
+                    "CONFIG_PATH": f"{appdirs.user_data_dir()}\DeneyapKartWeb",
+                    "LOG_PATH": f"{appdirs.user_data_dir()}\DeneyapKartWeb",
+                    "runSetup": True
+                }
+                configFileDataString = json.dumps(configFileData)
+                with open(f"{appdirs.user_data_dir()}\DeneyapKartWeb\config.json", "w") as configFile:
+                    configFile.write(configFileDataString)
 
     return configFileData
 
