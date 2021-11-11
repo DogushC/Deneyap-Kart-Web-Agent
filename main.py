@@ -50,7 +50,7 @@ def main():
     Data.config = createConfig()
 
     logFile = f"{Data.config['LOG_PATH']}\deneyap.log"
-    logging.basicConfig(filename=logFile, filemode='w', format='%(asctime)s-%(process)d-%(thread)d   %(levelno)d      %(message)s(%(funcName)s-%(lineno)d)', level=logging.INFO)
+    logging.basicConfig(filename=logFile, filemode='a+', format='%(asctime)s-%(process)d-%(thread)d   %(levelno)d      %(message)s(%(funcName)s-%(lineno)d)', level=logging.INFO)
     logging.info('----------------------- Program Start -----------------------')
 
 
