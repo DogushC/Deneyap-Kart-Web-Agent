@@ -2,6 +2,8 @@ import json
 import subprocess
 from pathlib import Path
 import logging
+from DownloadGUI import startGUI
+from multiprocessing import Process
 
 class Data:
     """
@@ -68,6 +70,10 @@ def setupDeneyap():
     """
     Program ilk yüklendiğinde çalıştırılır, arduino-cli'in konfigurasyonunu yapar, deneyap kartı arduino-cli'a ekler ve yükler.
     """
+
+    process = Process(target=startGUI)
+    process.start()
+
     try:
         executeCli("config init")
     except:
@@ -89,4 +95,4 @@ def setupDeneyap():
         logging.info(f"Config File Changed")
         configFile.write(configDataString)
 
-
+    process.terminate()
