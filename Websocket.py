@@ -83,7 +83,7 @@ class Websocket(aobject):
         if command == "upload":
             await self.upload(body['board'], body['port'], body["code"])
         elif command == "compile":
-            await self.compile(body['board'],body['port'], body["code"])
+            await self.compile(body['board'], body["code"])
         elif command == "getBoards":
             await self.getBoards()
         elif command == "getVersion":
