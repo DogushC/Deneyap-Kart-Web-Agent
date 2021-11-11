@@ -81,6 +81,7 @@ def setupDeneyap():
         executeCli("config add board_manager.additional_urls https://raw.githubusercontent.com/deneyapkart/deneyapkart-arduino-core/master/package_deneyapkart_index.json")
 
     executeCli("core install deneyap:esp32")
+    executeCli("lib install Stepper HCSR04 IRremote")
 
     Data.config['runSetup'] = False
     configDataString = json.dumps(Data.config)
