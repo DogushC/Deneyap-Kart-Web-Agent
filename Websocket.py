@@ -131,7 +131,7 @@ class Websocket(aobject):
         bodyToSend = json.dumps(bodyToSend)
         await self.websocket.send(bodyToSend)
 
-    async def compile(self, boardName, port, code):
+    async def compile(self, boardName, code):
         """
         Kodun derlenmesi için Board.compileCode() fonksiyonunu çalştıran fonksiyon
 
@@ -141,11 +141,11 @@ class Websocket(aobject):
         code (str): kodun kendisi.
         """
         if boardName == "Deneyap Mini":
-            pipe = Data.boards[port].compileCode(code, config.deneyapMini)
+            pipe = Board.compileCode(code, config.deneyapMini)
         elif boardName == "Deneyap Kart":
-            pipe = Data.boards[port].compileCode(code, config.deneyapKart)
+            pipe = Board.compileCode(code, config.deneyapKart)
         else:
-            logging.warning(f"Specified Board is not found. Board name: {board.boardName}")
+            logging.warning(f"Specified Board is not found. Board name: {boardName}")
             return
 
         bodyToSend = {"command": "cleanConsoleLog", "log": "Compling Code...\n"}

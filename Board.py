@@ -23,7 +23,7 @@ class Board:
         self.port = port
         logging.info(f"Board with Name:{boardName}, FQBN:{fqbn}, Port:{port} is created")
 
-    def uploadCode(self, code, fqbn = None):
+    def uploadCode(self, code, fqbn):
         """
         Kodu karta yükleyen fonksiyon
 
@@ -33,12 +33,12 @@ class Board:
         fqbn (str): kodun arduino-cli tarafında ki adı
         """
         logging.info(f"Uploading code to {self.boardName}:{self.port}")
-        fqbn = fqbn if fqbn != None else self.fqbn
         createInoFile(code)
         pipe = executeCliPipe(f"compile --port {self.port} --upload --fqbn {fqbn} {config.TEMP_PATH}/tempCode")
         return pipe
 
-    def compileCode(self, code, fqbn = None):
+    @staticmethod
+    def compileCode(code, fqbn):
         """
         Kodu derleyen fonksiyon
 
@@ -47,8 +47,7 @@ class Board:
 
         fqbn (str): kodun arduino-cli tarafında ki adı
         """
-        logging.info(f"Compiling code for {self.boardName}:{self.port}")
-        fqbn = fqbn if fqbn != None else self.fqbn
+        logging.info(f"Compiling code for {fqbn}")
         createInoFile(code)
         pipe = executeCliPipe(f"compile --fqbn {fqbn} {config.TEMP_PATH}/tempCode")
         return pipe
