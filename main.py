@@ -23,7 +23,7 @@ import os
 import appdirs
 import json
 import sys
-
+from ErrorGUI import showError
 
 def sysIconThread():
     """
@@ -58,7 +58,8 @@ def main():
         isSetupSuccess = setupDeneyap()
         if not isSetupSuccess:
             logging.critical("Setup exited with error. Exiting program")
-            return 0 #TODO show error gui to user
+            showError("Deneyap Kart kütüphaneleri indirilirken hata oluştu.")
+            return 0
 
     createFolder(Data.config["LOG_PATH"])
     createFolder(Data.config["TEMP_PATH"])
