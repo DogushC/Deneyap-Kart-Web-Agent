@@ -44,8 +44,8 @@ def main():
     Programın ilk çalışan fonksiyonu, system tray gui'ını, configurasyonu ve websocket server'larını çalıştırır
     """
     thread = threading.Thread(target=sysIconThread)
+    thread.daemon = True
     thread.start()
-
 
     Data.config = createConfig()
 
@@ -55,7 +55,10 @@ def main():
 
 
     if Data.config['runSetup']:
-        setupDeneyap()
+        isSetupSuccess = setupDeneyap()
+        if not isSetupSuccess:
+            logging.critical("Setup exited with error. Exiting program")
+            return 0 #TODO show error gui to user
 
     createFolder(Data.config["LOG_PATH"])
     createFolder(Data.config["TEMP_PATH"])
@@ -133,7 +136,7 @@ if __name__ == '__main__':
 
     try:
         main()
-    except:
+    finally:
         logging.exception("Main Error: ")
         for websocket in Data.websockets:
             websocket.closeSocket()

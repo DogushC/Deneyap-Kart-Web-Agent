@@ -13,6 +13,7 @@ class Data:
     threads = []
     config = {}
     websockets = []
+    processes = []
 
 def executeCli(command):
     """
@@ -84,10 +85,26 @@ def setupDeneyap():
 
     string = executeCli("config dump")
     if not ("deneyapkart" in string):
+        logging.info("package_deneyapkart_index.json is not found on config, adding it")
         executeCli("config add board_manager.additional_urls https://raw.githubusercontent.com/deneyapkart/deneyapkart-arduino-core/master/package_deneyapkart_index.json")
+        logging.info("added package_deneyapkart_index.json to config")
 
-    executeCli("core install deneyap:esp32")
-    executeCli("lib install Stepper HCSR04 IRremote")
+    else:
+        logging.info("package_deneyapkart_index.json is found on config skipping this step")
+
+    pipe = executeCliPipe("core install deneyap:esp32")
+    t = pipe.communicate()[1].decode("utf-8")
+    if t:
+        logging.critical(t)
+        process.terminate()
+        return False
+
+    pipe = executeCliPipe("lib install Stepper HCSR04 IRremote")
+    t = pipe.communicate()[1].decode("utf-8")
+    if t:
+        logging.critical(t)
+        process.terminate()
+        return False
 
     Data.config['runSetup'] = False
     configDataString = json.dumps(Data.config)
@@ -96,3 +113,5 @@ def setupDeneyap():
         configFile.write(configDataString)
 
     process.terminate()
+    return True
+
