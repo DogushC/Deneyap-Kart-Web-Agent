@@ -5,8 +5,9 @@ import config
 from DeviceChecker import DeviceChecker
 from utils import Data
 from Board import Board
-from multiprocessing import Manager
+from multiprocessing import Queue
 import logging
+from websockets.exceptions import ConnectionClosedOK
 
 class aobject(object):
     """Inheriting this class allows you to define an async __init__.
@@ -36,7 +37,7 @@ class Websocket(aobject):
         Data.websockets.append(self)
         self.websocket = websocket
 
-        self.queue = Manager().Queue()
+        self.queue = Queue()
 
         self.deviceChecker = DeviceChecker(self.queue)
         self.deviceChecker.start()
@@ -182,9 +183,15 @@ class Websocket(aobject):
                 except (asyncio.TimeoutError, ConnectionRefusedError):
                     if not self.queue.empty():
                         body = self.queue.get()
+                except Exception:
+                    logging.exception("Main Websocket recv error: ")
+                    await self.websocket.close()
+                    logging.info("Websocket is closed")
+                    break
 
                 await self.commandParser(body)
         except:
             logging.exception("Websocket Mainloop: ")
         finally:
             self.deviceChecker.terminate()
+            self.queue.task_done()

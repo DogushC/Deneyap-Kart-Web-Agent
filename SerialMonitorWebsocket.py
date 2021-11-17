@@ -170,9 +170,7 @@ class SerialMonitorWebsocket(aobject):
                 await self.commandParser(body)
 
             except Exception as e:
-                logging.info("Serial Monitor Error")
-                logging.exception("Because!: ")
-                traceback.print_exc()
+                logging.exception("Serial Monitor Error: ")
                 bodyToSend = {"command": "serialLog", "log": str(e)+"\n"}
                 bodyToSend = json.dumps(bodyToSend)
                 await self.websocket.send(bodyToSend)
