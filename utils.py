@@ -1,5 +1,6 @@
 import json
 import subprocess
+import time
 from pathlib import Path
 import logging
 from DownloadGUI import startGUI
@@ -81,7 +82,6 @@ def setupDeneyap():
         logging.info(f"Init file does exist skipping this step")
     else:
         logging.info(f"Init file created")
-
 
     string = executeCli("config dump")
     if not ("deneyapkart" in string):
