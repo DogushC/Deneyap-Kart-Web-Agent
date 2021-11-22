@@ -51,7 +51,7 @@ def main():
 
     logFile = f"{Data.config['LOG_PATH']}\deneyap.log"
     logging.basicConfig(filename=logFile, filemode='a+', format='%(asctime)s-%(process)d-%(thread)d   %(levelno)d      %(message)s(%(funcName)s-%(lineno)d)', level=logging.INFO)
-    logging.info('----------------------- Program Start -----------------------')
+    logging.info(f"----------------------- Program Start v{Data.config['version']}-----------------------")
 
 
     if Data.config['runSetup']:
