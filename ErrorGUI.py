@@ -4,7 +4,7 @@ from tkinter.messagebox import showerror
 
 
 
-def showError(message):
+def showError(message:str) -> None:
     root = Tk()
     root.withdraw()
     showerror(title = "Hata", message = message)

@@ -1,5 +1,6 @@
 import asyncio
 import json
+import subprocess
 
 import config
 from DeviceChecker import DeviceChecker
@@ -8,6 +9,7 @@ from Board import Board
 from multiprocessing import Queue
 import logging
 from websockets.exceptions import ConnectionClosedOK
+import websockets
 
 class aobject(object):
     """Inheriting this class allows you to define an async __init__.
@@ -32,7 +34,7 @@ class Websocket(aobject):
 
     path(str):
     """
-    async def __init__(self, websocket, path):
+    async def __init__(self, websocket: websockets, path:str): #TODO proper websocket typing
         logging.info(f"Websocket object is created")
         Data.websockets.append(self)
         self.websocket = websocket
@@ -44,7 +46,7 @@ class Websocket(aobject):
 
         await self.mainLoop()
 
-    async def readAndSend(self, pipe):
+    async def readAndSend(self, pipe: subprocess.PIPE) -> None:
         """
         daha önceden açılmış olan pipe'tan  veriyi okur ve websocket aracılığı ile web tarafına gönderir.
 
@@ -67,7 +69,7 @@ class Websocket(aobject):
         logging.info(f"Pipe output {allText}")
         await self.websocket.send(bodyToSend)
 
-    async def commandParser(self, body):
+    async def commandParser(self, body: dict) -> None:
         """
         web tarfından gelen bilgiyi ilgili fonksiyonlara yönlendirir.
 
@@ -91,7 +93,7 @@ class Websocket(aobject):
             await self.getVersion()
 
 
-    async def sendResponse(self):
+    async def sendResponse(self) -> None:
         """
         Web tarafına mesajın başarı ile alındığını geri bildirir.
         """
@@ -101,7 +103,7 @@ class Websocket(aobject):
         await self.websocket.send(bodyToSend)
 
 
-    async def upload(self, boardName, port, code):
+    async def upload(self, boardName:str, port:str, code:str) -> None:
         """
         Kodun karta yüklenmesi için Board.uploadCode() fonksiyonunu çalştıran fonksiyon
 
@@ -124,7 +126,7 @@ class Websocket(aobject):
         await self.websocket.send(bodyToSend)
         await self.readAndSend(pipe)
 
-    async def getVersion(self):
+    async def getVersion(self) -> None:
         """
         Versiyonu Webe Gönderir
         """
@@ -132,7 +134,7 @@ class Websocket(aobject):
         bodyToSend = json.dumps(bodyToSend)
         await self.websocket.send(bodyToSend)
 
-    async def compile(self, boardName, code):
+    async def compile(self, boardName:str, code:str) -> None:
         """
         Kodun derlenmesi için Board.compileCode() fonksiyonunu çalştıran fonksiyon
 
@@ -154,20 +156,20 @@ class Websocket(aobject):
         await self.websocket.send(bodyToSend)
         await self.readAndSend(pipe)
 
-    async def getBoards(self):
+    async def getBoards(self) -> None:
         """
         Bilgisayara takılı olan güncel kartları web tarafına gönderir.
         """
         Board.refreshBoards()
         await Board.sendBoardInfo(self.websocket)
 
-    def closeSocket(self):
+    def closeSocket(self) -> None:
         logging.info("Closing DeviceChecker")
         self.deviceChecker.terminate()
         self.deviceChecker.process.join()
         logging.info("DeviceChecker Closed")
 
-    async def mainLoop(self):
+    async def mainLoop(self) -> None:
         """
         Ana döngü, her döngüde, web tarafından mesaj gelip gelmediğini kontrol eder, veri geldiyse commandParser()'a gönderir,
         aksi halde queue'de ki komutları kontrol eder.

@@ -16,7 +16,7 @@ class Data:
     websockets = []
     processes = []
 
-def executeCli(command):
+def executeCli(command:str) -> str:
     """
     verilen komutu çalıştırır, komut bitene kadar programı bekletir ve çıktıyı döner.
 
@@ -29,7 +29,7 @@ def executeCli(command):
     returnString = subprocess.check_output(f"arduino-cli {command}", shell=True)
     return returnString.decode("utf-8")
 
-def executeCliPipe(command):
+def executeCliPipe(command:str) -> subprocess.PIPE:
     """
     verilen komutu çalıştırır, komutun bitmesini beklemez, komutun çalıştığı process ile olan pipe'ı döner.
 
@@ -42,7 +42,7 @@ def executeCliPipe(command):
     pipe = subprocess.Popen(f"arduino-cli {command}", shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     return pipe
 
-def createFolder(fileDir):
+def createFolder(fileDir:str) -> None:
     """
     Yeni klasör oluşturur. Eğer var ise, bir değişiklik yapmaz
 
@@ -52,7 +52,7 @@ def createFolder(fileDir):
     logging.info(f"Creating folder {fileDir}")
     Path(fileDir).mkdir(parents=True, exist_ok=True)
 
-def createInoFile(code):
+def createInoFile(code:str) -> None:
     """
     .ino dosyasını geçici klasörün içerisine oluşturur.
 
@@ -68,7 +68,7 @@ def createInoFile(code):
         logging.info(f"File created")
 
 
-def setupDeneyap():
+def setupDeneyap() -> bool:
     """
     Program ilk yüklendiğinde çalıştırılır, arduino-cli'in konfigurasyonunu yapar, deneyap kartı arduino-cli'a ekler ve yükler.
     """

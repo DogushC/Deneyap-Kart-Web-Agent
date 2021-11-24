@@ -5,6 +5,7 @@ from utils import Data
 import serial
 import logging
 import config
+import websockets
 
 class aobject(object):
     """Inheriting this class allows you to define an async __init__.
@@ -29,7 +30,7 @@ class SerialMonitorWebsocket(aobject):
 
     path(str):
     """
-    async def __init__(self, websocket, path):
+    async def __init__(self, websocket:websockets, path:str): #TODO proper websocket typing
         logging.info(f"SerialMonitorWebsocket is object created")
 
         self.websocket = websocket
@@ -37,7 +38,7 @@ class SerialMonitorWebsocket(aobject):
         self.ser = None
         await self.mainLoop()
 
-    async def commandParser(self, body):
+    async def commandParser(self, body:dict) -> None:
         """
         web tarfından gelen bilgiyi ilgili fonksiyonlara yönlendirir.
 
@@ -62,7 +63,7 @@ class SerialMonitorWebsocket(aobject):
             self.serialWrite(body["text"])
 
 
-    def serialWrite(self, text):
+    def serialWrite(self, text:str) -> None:
         """
         Serial monitöre yazı yazdırır.
 
@@ -73,7 +74,7 @@ class SerialMonitorWebsocket(aobject):
             logging.info(f"Writing to serial, data:{text}")
             self.ser.write(text.encode("utf-8"))
 
-    def openSerialMontor(self, port, baudRate):
+    def openSerialMontor(self, port:str, baudRate:int) -> None:
         """
         Serial monitörü açar.
 
@@ -104,7 +105,7 @@ class SerialMonitorWebsocket(aobject):
             #     bytesize=serial.EIGHTBITS,
             #     timeout=0)
 
-    async def sendResponse(self):
+    async def sendResponse(self) -> None:
         """
         Web tarafına mesajın başarı ile alındığını geri bildirir.
         """
@@ -113,7 +114,7 @@ class SerialMonitorWebsocket(aobject):
         logging.info(f"SerialMonitorWebsocket sending response back")
         await self.websocket.send(bodyToSend)
 
-    async def closeSerialMonitor(self):
+    async def closeSerialMonitor(self) -> None:
         """
         Serial monitörü kapatır
         """
@@ -126,7 +127,7 @@ class SerialMonitorWebsocket(aobject):
 
         self.serialOpen = False
 
-    async def serialLog(self):
+    async def serialLog(self) -> None:
         """
         Serial monitörü okur ve websocket aracılığı ile web tarafına gönderir
         """
@@ -146,7 +147,7 @@ class SerialMonitorWebsocket(aobject):
             bodyToSend = json.dumps(bodyToSend)
             await self.websocket.send(bodyToSend)
 
-    async def mainLoop(self):
+    async def mainLoop(self) -> None:
         """
         Ana döngü, her döngüde, web tarafından mesaj gelip gelmediğini kontrol eder, veri geldiyse commandParser()'a gönderir,
         aksi halde serial monitör açık ise serialLog()'u çalıştırır

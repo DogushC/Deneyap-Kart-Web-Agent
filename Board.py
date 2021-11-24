@@ -1,8 +1,9 @@
-import random
+import subprocess
 from utils import Data, createInoFile, executeCliPipe, executeCli
 import config
 import json
 import logging
+import websockets
 
 class Board:
     """
@@ -17,13 +18,13 @@ class Board:
 
     ID (int): karta atanan rastgele id, (1000000 - 9999999) arası, web tarafında eşlemek için kullanılır
     """
-    def __init__(self, boardName, fqbn, port):
+    def __init__(self, boardName: str, fqbn: str, port:str):
         self.boardName = boardName
         self.fqbn = fqbn
         self.port = port
         logging.info(f"Board with Name:{boardName}, FQBN:{fqbn}, Port:{port} is created")
 
-    def uploadCode(self, code, fqbn):
+    def uploadCode(self, code:str, fqbn:str) -> subprocess.PIPE:
         """
         Kodu karta yükleyen fonksiyon
 
@@ -38,7 +39,7 @@ class Board:
         return pipe
 
     @staticmethod
-    def compileCode(code, fqbn):
+    def compileCode(code:str, fqbn:str) -> subprocess.PIPE:
         """
         Kodu derleyen fonksiyon
 
@@ -53,7 +54,7 @@ class Board:
         return pipe
 
     @staticmethod
-    def refreshBoards():
+    def refreshBoards() -> None:
         """
         bilgisayara bağlı olan kartları kontrol eder ve Data class'ını günceller
         """
@@ -75,7 +76,7 @@ class Board:
             Data.boards[boardPort] = board
 
     @staticmethod
-    async def sendBoardInfo(websocket):
+    async def sendBoardInfo(websocket: websockets) -> None: #TODO it is not websockets but websocket connection, do proper typing
         """
         Bilgisayara bağlı olan kartları websocket aracılığı ile web'e gönderir.
 
@@ -90,5 +91,5 @@ class Board:
         await websocket.send(body)
 
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return f"{self.boardName} on port: {self.port} with fqbn of {self.fqbn}"

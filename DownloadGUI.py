@@ -5,7 +5,7 @@ base = "Deneyap Kart core ve kütüphaneleri indirliyor. bu işlem biraz zaman a
 lbl = ""
 window = ""
 
-def startGUI():
+def startGUI() -> None:
     global lbl
     global window
 
@@ -19,7 +19,7 @@ def startGUI():
     window.after(1, animateText)
     window.mainloop()
 
-def animateText():
+def animateText() -> None:
     i = 0
     while True:
         i+=1

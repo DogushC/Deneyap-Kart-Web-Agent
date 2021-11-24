@@ -1,3 +1,4 @@
+import multiprocessing
 from multiprocessing import Process, Queue
 from serial.tools import list_ports
 import time
@@ -20,7 +21,7 @@ class DeviceChecker:
 
         self.process.start()
 
-    def queuer(self, queue, startStopQueue):
+    def queuer(self, queue: multiprocessing.Queue, startStopQueue: multiprocessing.Queue) -> None:
         """
         Yeni kart bulunduğunda ana procces's queue aracılığı ile bildirim gönderir. Yeni kartların eklenip eklenmediğini
         while döngüsü içerisinde kontrol eder.
@@ -54,34 +55,34 @@ class DeviceChecker:
                     queue.put({"sender":"deviceChecker", "command":"getBoards"})
 
             time.sleep(1)
-    def start(self):
+    def start(self) -> None:
         """
         querer fonksiyonun içerisinde ki while döngüsünün çalışmasını sağlar
         """
         self.startStopQueue.put({"command":"startDeviceChecker"})
         logging.info(f"Starting device checker")
 
-    def stop(self):
+    def stop(self) -> None:
         """
         querer fonksiyonun içerisinde ki while döngüsünün durmasını sağlar
         """
         self.startStopQueue.put({"command": "stopDeviceChecker"})
         logging.info(f"Stoping device checker")
 
-    def terminate(self):
+    def terminate(self) -> None:
         """
         querer fonksiyonun içerisinde ki while döngüsünü bitirir.
         """
         self.startStopQueue.put({"command": "terminateDeviceChecker"})
         logging.info(f"Termitating device checker")
 
-    def enumerate_serial_devices(self):
+    def enumerate_serial_devices(self) -> set:
         """
         bilgisayarın portlarına takılı olan kartları çeker
         """
         return set([item for item in list_ports.comports()])
 
-    def check_new_devices(self, old_devices):
+    def check_new_devices(self, old_devices: set) -> (set, bool):
         """
         eski kartlar ile yeni çekilen kartları karşılaştırarak, eklenen ya da çıkarılan kartın olup olmadığına bakar
         """

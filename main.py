@@ -25,7 +25,7 @@ import json
 import sys
 from ErrorGUI import showError
 
-def sysIconThread():
+def sysIconThread() -> None:
     """
     Ayrı bir thread'de system tray için gui oluşturur.
     """
@@ -39,7 +39,7 @@ def sysIconThread():
     icon = Icon("name", image, "Deneyap Kart", menu)
     icon.run()
 
-def main():
+def main() -> None:
     """
     Programın ilk çalışan fonksiyonu, system tray gui'ını, configurasyonu ve websocket server'larını çalıştırır
     """
@@ -59,7 +59,7 @@ def main():
         if not isSetupSuccess:
             logging.critical("Setup exited with error. Exiting program")
             showError("Deneyap Kart kütüphaneleri indirilirken hata oluştu.")
-            return 0
+            return
 
     createFolder(Data.config["LOG_PATH"])
     createFolder(Data.config["TEMP_PATH"])
@@ -85,7 +85,7 @@ def main():
 
 
 
-def createConfig():
+def createConfig() -> None:
     """
     İlk çalışmada config dosyasını oluşturur, eğer var ise, programa yükler.
     """
