@@ -85,7 +85,7 @@ def main() -> None:
 
 
 
-def createConfig() -> None:
+def createConfig() -> dict:
     """
     İlk çalışmada config dosyasını oluşturur, eğer var ise, programa yükler.
     """
