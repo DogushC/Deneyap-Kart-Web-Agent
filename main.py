@@ -110,8 +110,8 @@ def createConfig() -> None:
         with open(f"{appdirs.user_data_dir()}\DeneyapKartWeb\config.json", "r") as configFile:
             configFileDataString = configFile.read()
             configFileData = json.loads(configFileDataString)
-
-            if (configFileData['version'] != InitialConfig.version):
+            version = configFileData['version'] if "version" in configFileData else "0.0.0"
+            if (version != InitialConfig.version):
                 configFileData = {
                     "deneyapKart": "deneyap:esp32:dydk_mpv10",
                     "deneyapMini": "deneyap:esp32:dym_mpv10",
