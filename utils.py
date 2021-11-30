@@ -99,7 +99,21 @@ def setupDeneyap() -> bool:
         process.terminate()
         return False
 
-    pipe = executeCliPipe("lib install Stepper HCSR04 IRremote")
+    pipe = executeCliPipe("lib install Stepper IRremote")
+    t = pipe.communicate()[1].decode("utf-8")
+    if t:
+        logging.critical(t)
+        process.terminate()
+        return False
+
+    pipe = executeCliPipe("config set library.enable_unsafe_install true")
+    t = pipe.communicate()[1].decode("utf-8")
+    if t:
+        logging.critical(t)
+        process.terminate()
+        return False
+
+    pipe = executeCliPipe("lib install --zip-path libzips/Tone32.zip")
     t = pipe.communicate()[1].decode("utf-8")
     if t:
         logging.critical(t)
