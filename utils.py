@@ -105,7 +105,7 @@ def setupDeneyap() -> bool:
         logging.critical(t)
         process.terminate()
         return False
-
+    """
     pipe = executeCliPipe("config set library.enable_unsafe_install true")
     t = pipe.communicate()[1].decode("utf-8")
     if t:
@@ -119,7 +119,7 @@ def setupDeneyap() -> bool:
         logging.critical(t)
         process.terminate()
         return False
-
+    """
     Data.config['runSetup'] = False
     configDataString = json.dumps(Data.config)
     with open(f"{Data.config['CONFIG_PATH']}\config.json", 'w') as configFile:
