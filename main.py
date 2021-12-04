@@ -138,9 +138,8 @@ if __name__ == '__main__':
     try:
         main()
     except:
-        pass
-    finally:
         logging.exception("Main Error: ")
+    finally:
         for websocket in Data.websockets:
             websocket.closeSocket()
         asyncio.get_event_loop().stop()
