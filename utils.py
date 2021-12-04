@@ -42,6 +42,15 @@ def executeCliPipe(command:str) -> subprocess.PIPE:
     pipe = subprocess.Popen(f"arduino-cli {command}", shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     return pipe
 
+def evaluatePipe(pipe: subprocess.PIPE) -> bool:
+    t = pipe.communicate()[1].decode("utf-8")
+    if t:
+        logging.critical(t)
+        process.terminate()
+        return False
+    return True
+    #TODO if there is no error, return output, so instead of f() -> bool f() -> bool, string
+
 def createFolder(fileDir:str) -> None:
     """
     Yeni klasör oluşturur. Eğer var ise, bir değişiklik yapmaz
