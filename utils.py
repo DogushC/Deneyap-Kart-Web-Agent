@@ -101,7 +101,7 @@ def setupDeneyap() -> bool:
     else:
         logging.info("package_deneyapkart_index.json is found on config skipping this step")
 
-    pipe = executeCliPipe("core install deneyap:esp32")
+    pipe = executeCliPipe("core install deneyap:esp32@1.3.2")
     t = pipe.communicate()[1].decode("utf-8")
     if t:
         logging.critical(t)
