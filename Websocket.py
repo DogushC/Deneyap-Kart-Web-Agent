@@ -196,3 +196,4 @@ class Websocket(aobject):
             logging.exception("Websocket Mainloop: ")
         finally:
             self.deviceChecker.terminate()
+            self.deviceChecker.join()
