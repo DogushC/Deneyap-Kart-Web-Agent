@@ -34,10 +34,16 @@ def sysIconThread() -> None:
         icon.stop()
         _thread.interrupt_main()
 
-    menu = (MenuItem('Exit', stop),)
+    menu = (MenuItem('Çıkış', stop), MenuItem('Kütüphanelere Git', showLibPath), MenuItem('Siteye Git', goToWebsite))
     image = Image.open("icon.ico")
     icon = Icon("name", image, "Deneyap Kart", menu)
     icon.run()
+
+def goToWebsite():
+    pass
+
+def showLibPath():
+    pass
 
 def main() -> None:
     """
@@ -92,17 +98,22 @@ def createConfig() -> dict:
     Path(InitialConfig.LOG_PATH).mkdir(parents=True, exist_ok=True)
 
     isConfigExists = os.path.exists(f'{InitialConfig.CONFIG_PATH}\config.json')
-    if not isConfigExists:
-        configFileData = {
-                "deneyapKart" : "deneyap:esp32:dydk_mpv10",
-                "deneyapMini" : "deneyap:esp32:dym_mpv10",
-                "version": InitialConfig.version,
+    configFileData = {
+        "deneyapKart": "deneyap:esp32:dydk_mpv10",
+        "deneyapMini": "deneyap:esp32:dym_mpv10",
 
-                "TEMP_PATH" : f"{appdirs.user_data_dir()}\DeneyapKartWeb\Temp",
-                "CONFIG_PATH" : f"{appdirs.user_data_dir()}\DeneyapKartWeb",
-                "LOG_PATH" : f"{appdirs.user_data_dir()}\DeneyapKartWeb",
-                "runSetup": True
-            }
+        "AGENT_VERSION": InitialConfig.AGENT_VERSION,
+        "DENEYAP_VERSION": InitialConfig.DENEYAP_VERSION,
+
+        "TEMP_PATH": f"{appdirs.user_data_dir()}\DeneyapKartWeb\Temp",
+        "CONFIG_PATH": f"{appdirs.user_data_dir()}\DeneyapKartWeb",
+        "LOG_PATH": f"{appdirs.user_data_dir()}\DeneyapKartWeb",
+        "LIB_PATH": f"{appdirs.user_data_dir()}/Arduino15/packages/deneyap/hardware/esp32/{InitialConfig.DENEYAP_VERSION}/libraries",
+
+        "runSetup": True
+    }
+    if not isConfigExists:
+
         configFileDataString = json.dumps(configFileData)
         with open(f"{appdirs.user_data_dir()}\DeneyapKartWeb\config.json", "w") as configFile:
             configFile.write(configFileDataString)
@@ -110,18 +121,8 @@ def createConfig() -> dict:
         with open(f"{appdirs.user_data_dir()}\DeneyapKartWeb\config.json", "r") as configFile:
             configFileDataString = configFile.read()
             configFileData = json.loads(configFileDataString)
-            version = configFileData['version'] if "version" in configFileData else "0.0.0"
-            if (version != InitialConfig.version):
-                configFileData = {
-                    "deneyapKart": "deneyap:esp32:dydk_mpv10",
-                    "deneyapMini": "deneyap:esp32:dym_mpv10",
-                    "version": InitialConfig.version,
-
-                    "TEMP_PATH": f"{appdirs.user_data_dir()}\DeneyapKartWeb\Temp",
-                    "CONFIG_PATH": f"{appdirs.user_data_dir()}\DeneyapKartWeb",
-                    "LOG_PATH": f"{appdirs.user_data_dir()}\DeneyapKartWeb",
-                    "runSetup": True
-                }
+            version = configFileData['AGENT_VERSION'] if "AGENT_VERSION" in configFileData else "0.0.0"
+            if (version != InitialConfig.AGENT_VERSION):
                 configFileDataString = json.dumps(configFileData)
                 with open(f"{appdirs.user_data_dir()}\DeneyapKartWeb\config.json", "w") as configFile:
                     configFile.write(configFileDataString)
