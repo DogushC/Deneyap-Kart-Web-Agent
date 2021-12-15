@@ -69,7 +69,7 @@ def main() -> None:
 
     logFile = f"{Data.config['LOG_PATH']}\deneyap.log"
     logging.basicConfig(filename=logFile, filemode='a+', format='%(asctime)s-%(process)d-%(thread)d   %(levelno)d      %(message)s(%(funcName)s-%(lineno)d)', level=logging.INFO)
-    logging.info(f"----------------------- Program Start v{Data.config['AGENT_VERSION']}-----------------------")
+    logging.info(f"----------------------- Program Start Agent: v{Data.config['AGENT_VERSION']} Core: v{Data.config['DENEYAP_VERSION']}-----------------------")
 
 
     if Data.config['runSetup']:
