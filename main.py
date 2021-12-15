@@ -3,6 +3,8 @@ Main dosyası, Programın giriş noktası
 """
 
 import asyncio
+
+import pystray
 import websockets
 from websockets.legacy import server
 
@@ -24,6 +26,7 @@ import appdirs
 import json
 import sys
 from ErrorGUI import showError
+import webbrowser
 
 def sysIconThread() -> None:
     """
@@ -34,30 +37,39 @@ def sysIconThread() -> None:
         icon.stop()
         _thread.interrupt_main()
 
-    menu = (MenuItem('Çıkış', stop), MenuItem('Kütüphanelere Git', showLibPath), MenuItem('Siteye Git', goToWebsite))
+    menu = (MenuItem(f'Deneyap Kart Web Version: {Data.config["AGENT_VERSION"]}', lambda x:x, enabled=False),
+            MenuItem(f'Deneyap Core Version: {Data.config["DENEYAP_VERSION"]}', lambda x: x, enabled=False),
+            MenuItem('Siteye Git', goToWebsite),
+            MenuItem('Kütüphanelere Git', goToLib),
+            MenuItem('Log Dosyasını Aç', goToLogFile),
+            MenuItem('Çıkış', stop), )
     image = Image.open("icon.ico")
     icon = Icon("name", image, "Deneyap Kart", menu)
     icon.run()
 
 def goToWebsite():
-    pass
+    webbrowser.open("https://deneyapkart.org/deneyapkart/deneyapblok/")
 
-def showLibPath():
-    pass
+def goToLib():
+    os.startfile(Data.config['LIB_PATH'])
+
+def goToLogFile():
+    os.startfile(f"{Data.config['LOG_PATH']}")
+
 
 def main() -> None:
     """
     Programın ilk çalışan fonksiyonu, system tray gui'ını, configurasyonu ve websocket server'larını çalıştırır
     """
+    Data.config = createConfig()
+
     thread = threading.Thread(target=sysIconThread)
     thread.daemon = True
     thread.start()
 
-    Data.config = createConfig()
-
     logFile = f"{Data.config['LOG_PATH']}\deneyap.log"
     logging.basicConfig(filename=logFile, filemode='a+', format='%(asctime)s-%(process)d-%(thread)d   %(levelno)d      %(message)s(%(funcName)s-%(lineno)d)', level=logging.INFO)
-    logging.info(f"----------------------- Program Start v{Data.config['version']}-----------------------")
+    logging.info(f"----------------------- Program Start v{Data.config['AGENT_VERSION']}-----------------------")
 
 
     if Data.config['runSetup']:

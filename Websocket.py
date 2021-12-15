@@ -130,7 +130,7 @@ class Websocket(aobject):
         """
         Versiyonu Webe Gönderir
         """
-        bodyToSend = {"command": "returnVersion", "version": config.version}
+        bodyToSend = {"command": "returnVersion", "version": config.AGENT_VERSION}
         bodyToSend = json.dumps(bodyToSend)
         await self.websocket.send(bodyToSend)
 
