@@ -83,14 +83,17 @@ def main() -> None:
     createFolder(Data.config["TEMP_PATH"])
 
 
-    start_server = websockets.serve(Websocket, 'localhost', 49182)
-    asyncio.get_event_loop().run_until_complete(start_server)
-    logging.info("Main Websocket is ready")
+    try:
+        start_server = websockets.serve(Websocket, 'localhost', 49182)
+        asyncio.get_event_loop().run_until_complete(start_server)
+        logging.info("Main Websocket is ready")
 
-    start_serial_server = websockets.serve(SerialMonitorWebsocket, 'localhost', 49183)
-    asyncio.get_event_loop().run_until_complete(start_serial_server)
-    logging.info("Serial Websocket is ready")
-
+        start_serial_server = websockets.serve(SerialMonitorWebsocket, 'localhost', 49183)
+        asyncio.get_event_loop().run_until_complete(start_serial_server)
+        logging.info("Serial Websocket is ready")
+    except OSError:
+        showError("Program Zaten Çalışıyor.")
+        raise
 
     try:
         logging.info("Running Forever...")
