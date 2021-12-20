@@ -76,6 +76,9 @@ def createInoFile(code:str) -> None:
         inoFile.writelines(code)
         logging.info(f"File created")
 
+def downloadCore(version):
+    pipe = executeCliPipe(f"core install deneyap:esp32@{version}")
+    return pipe.communicate()[1].decode("utf-8")
 
 def setupDeneyap() -> bool:
     """
@@ -101,19 +104,20 @@ def setupDeneyap() -> bool:
     else:
         logging.info("package_deneyapkart_index.json is found on config skipping this step")
 
-    pipe = executeCliPipe("core install deneyap:esp32@1.3.2")
-    t = pipe.communicate()[1].decode("utf-8")
+    t = downloadCore("1.3.2")
     if t:
         logging.critical(t)
         process.terminate()
         return False
 
+    #TODO this part will be added as default to core + adafruit color thingy.
     pipe = executeCliPipe("lib install Stepper IRremote")
     t = pipe.communicate()[1].decode("utf-8")
     if t:
         logging.critical(t)
         process.terminate()
         return False
+
     """
     pipe = executeCliPipe("config set library.enable_unsafe_install true")
     t = pipe.communicate()[1].decode("utf-8")
