@@ -79,7 +79,7 @@ def downloadCore(version):
     pipe = executeCliPipe(f"core install deneyap:esp32@{version}")
     return pipe.communicate()[1].decode("utf-8")
 
-def setupDeneyap() -> bool:
+def setupDeneyap() -> (bool, str):
     """
     Program ilk yüklendiğinde çalıştırılır, arduino-cli'in konfigurasyonunu yapar, deneyap kartı arduino-cli'a ekler ve yükler.
     """
@@ -114,7 +114,7 @@ def setupDeneyap() -> bool:
     if t:
         logging.critical(t)
         process.terminate()
-        return False
+        return False,t
 
     #TODO this part will be added as default to core + adafruit color thingy.
     pipe = executeCliPipe("lib install Stepper IRremote")
@@ -122,7 +122,7 @@ def setupDeneyap() -> bool:
     if t:
         logging.critical(t)
         process.terminate()
-        return False
+        return False,t
 
     """
     pipe = executeCliPipe("config set library.enable_unsafe_install true")
@@ -146,5 +146,5 @@ def setupDeneyap() -> bool:
         configFile.write(configDataString)
 
     process.terminate()
-    return True
+    return True,1
 

@@ -73,10 +73,10 @@ def main() -> None:
 
 
     if Data.config['runSetup']:
-        isSetupSuccess = setupDeneyap()
+        isSetupSuccess, message = setupDeneyap()
         if not isSetupSuccess:
             logging.critical("Setup exited with error. Exiting program")
-            showError("Deneyap Kart kütüphaneleri indirilirken hata oluştu.")
+            showError(f"Deneyap Kart kütüphaneleri indirilirken hata oluştu.\n\n{message}")
             return
 
     createFolder(Data.config["LOG_PATH"])
