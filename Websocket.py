@@ -4,7 +4,7 @@ import subprocess
 
 import config
 from DeviceChecker import DeviceChecker
-from utils import Data
+from utils import Data, downloadCore
 from Board import Board
 from multiprocessing import Queue
 import logging
@@ -91,7 +91,23 @@ class Websocket(aobject):
             await self.getBoards()
         elif command == "getVersion":
             await self.getVersion()
+        elif command == "changeVersion":
+            await self.changeVersion(body['version'])
 
+    async def changeVersion(self, version):
+        #TODO trigger this function from web, example body {command:changeVersion, version:1.3.2}
+        logging.info(f"Changing version to {version}")
+        error = downloadCore(version)
+        bodyToSend = {"command":"versionChange", "success":True}
+        if error:
+            logging.info("Version cant be downloaded")
+            logging.info(error)
+            bodyToSend["success"] = False
+        await self.websocket.send(bodyToSend)
+
+    def setUploadOptions(self, uploadMode = "auto", uploadSpeed = 921600, CPUFreq=240, flashFreq = 90, flasMode="QIO", partitionScheme="default", debugLevel="None"):
+
+        pass
 
     async def sendResponse(self) -> None:
         """

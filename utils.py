@@ -46,7 +46,6 @@ def evaluatePipe(pipe: subprocess.PIPE) -> bool:
     t = pipe.communicate()[1].decode("utf-8")
     if t:
         logging.critical(t)
-        process.terminate()
         return False
     return True
     #TODO if there is no error, return output, so instead of f() -> bool f() -> bool, string
@@ -100,6 +99,13 @@ def setupDeneyap() -> bool:
         logging.info("package_deneyapkart_index.json is not found on config, adding it")
         executeCli("config add board_manager.additional_urls https://raw.githubusercontent.com/deneyapkart/deneyapkart-arduino-core/master/package_deneyapkart_index.json")
         logging.info("added package_deneyapkart_index.json to config")
+
+    if not ("DeneyapKartWeb" in string):
+        logging.info("directories is not set, setting it.")
+        executeCli(f"config set directories.data {Data.config['CONFIG_PATH']}\DeneyapKartWeb\DeneyapKartCore")
+        executeCli(f"config set directories.downloads {Data.config['CONFIG_PATH']}\DeneyapKartWeb\DeneyapKartCore\staging")
+        executeCli(f"config set directories.user {Data.config['CONFIG_PATH']}\DeneyapKartWeb\DeneyapKartCore\packages\deneyap\hardware\esp32\{Data.config['AGENT_VERSION']}\ArduinoLibraries")
+        logging.info("directories are changed")
 
     else:
         logging.info("package_deneyapkart_index.json is found on config skipping this step")
