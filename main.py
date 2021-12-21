@@ -120,25 +120,28 @@ def createConfig() -> dict:
         "AGENT_VERSION": InitialConfig.AGENT_VERSION,
         "DENEYAP_VERSION": InitialConfig.DENEYAP_VERSION,
 
-        "TEMP_PATH": f"{appdirs.user_data_dir()}\DeneyapKartWeb\Temp",
-        "CONFIG_PATH": f"{appdirs.user_data_dir()}\DeneyapKartWeb",
-        "LOG_PATH": f"{appdirs.user_data_dir()}\DeneyapKartWeb",
-        "LIB_PATH": f"{appdirs.user_data_dir()}/Arduino15/packages/deneyap/hardware/esp32/{InitialConfig.DENEYAP_VERSION}/libraries",
+        "TEMP_PATH": InitialConfig.TEMP_PATH,
+        "CONFIG_PATH": InitialConfig.CONFIG_PATH,
+        "LOG_PATH": InitialConfig.LOG_PATH,
+        "LIB_PATH": InitialConfig.LIB_PATH,
 
         "runSetup": True
     }
     if not isConfigExists:
-
         configFileDataString = json.dumps(configFileData)
         with open(f"{appdirs.user_data_dir()}\DeneyapKartWeb\config.json", "w") as configFile:
             configFile.write(configFileDataString)
     else:
         with open(f"{appdirs.user_data_dir()}\DeneyapKartWeb\config.json", "r") as configFile:
             configFileDataString = configFile.read()
-            configFileData = json.loads(configFileDataString)
-            version = configFileData['AGENT_VERSION'] if "AGENT_VERSION" in configFileData else "0.0.0"
+            configFileDataOld = json.loads(configFileDataString)
+            for k in configFileData.keys():
+                if not k in configFileDataOld:
+                    logging.info(f"found non-existing config option, adding it. option:{k}")
+                    configFileDataOld[k] = configFileData[k]
+            version = configFileDataOld['AGENT_VERSION'] if "AGENT_VERSION" in configFileDataOld else "0.0.0"
             if (version != InitialConfig.AGENT_VERSION):
-                configFileDataString = json.dumps(configFileData)
+                configFileDataString = json.dumps(configFileDataOld)
                 with open(f"{appdirs.user_data_dir()}\DeneyapKartWeb\config.json", "w") as configFile:
                     configFile.write(configFileDataString)
 
