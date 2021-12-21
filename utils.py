@@ -102,9 +102,9 @@ def setupDeneyap() -> (bool, str):
 
     if not ("DeneyapKartWeb" in string):
         logging.info("directories is not set, setting it.")
-        # executeCli(f"config set directories.data {Data.config['CONFIG_PATH']}")
-        # executeCli(f"config set directories.downloads {Data.config['CONFIG_PATH']}\staging")
-        # executeCli(f"config set directories.user {Data.config['CONFIG_PATH']}\packages\deneyap\hardware\esp32\{Data.config['AGENT_VERSION']}\ArduinoLibraries")
+        executeCli(f"config set directories.data {Data.config['CONFIG_PATH']}")
+        executeCli(f"config set directories.downloads {Data.config['CONFIG_PATH']}\staging")
+        executeCli(f"config set directories.user {Data.config['CONFIG_PATH']}\packages\deneyap\hardware\esp32\{Data.config['DENEYAP_VERSION']}\ArduinoLibraries")
         logging.info("directories are changed")
 
     else:
