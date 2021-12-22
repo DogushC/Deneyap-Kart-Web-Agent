@@ -18,9 +18,11 @@ class Data:
 
     @staticmethod
     def updateConfig():
+        logging.info("config file is changing, new file: ", Data.config)
         configFileDataString = json.dumps(Data.config)
         with open(f"{Data.config['CONFIG_PATH']}\config.json", "w") as configFile:
             configFile.write(configFileDataString)
+        logging.info("config file changed successfully.")
 
 def executeCli(command:str) -> str:
     """
