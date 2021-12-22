@@ -95,9 +95,25 @@ class Websocket(aobject):
             await self.changeVersion(body['version'])
         elif command == "getExampleNames":
             await self.getExampleNames()
+        elif command == "getExample":
+            await self.getExample(body['lib'], body['example'])
+
+    async def getExample(self, libName, exampleName):
+        #TODO add logging and weak typing
+        #TODO THIS FUNCTION IS NOT TESTED. TEST IT BEFORE USING!
+        with open(f"{Data.config['LIB_PATH']}/{libName}/examples/{exampleName}/{exampleName}.ino", 'r') as ex:
+            code = ex.read()
+
+        bodyToSend = {
+            "command":"example",
+            "code": code,
+        }
+        bodyToSend = json.dumps(bodyToSend)
+        await self.websocket.send(bodyToSend)
 
     async def getExampleNames(self):
         #TODO add logging and weak typing
+        #TODO THIS FUNCTION IS NOT TESTED. TEST IT BEFORE USING!
         libs = os.listdir(Data.config["LIB_PATH"])
         examples = {}
         for lib in libs:
