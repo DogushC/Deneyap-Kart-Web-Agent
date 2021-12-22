@@ -95,7 +95,6 @@ class Websocket(aobject):
             await self.changeVersion(body['version'])
 
     async def changeVersion(self, version):
-        #TODO trigger this function from web, example body {command:changeVersion, version:1.3.2}
         logging.info(f"Changing version to {version}")
         error = downloadCore(version)
         bodyToSend = {"command":"versionChangeStatus", "success":True}
