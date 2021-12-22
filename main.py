@@ -130,10 +130,10 @@ def createConfig() -> dict:
     }
     if not isConfigExists:
         configFileDataString = json.dumps(configFileData)
-        with open(f"{appdirs.user_data_dir()}\DeneyapKartWeb\config.json", "w") as configFile:
+        with open(f"{configFileData['CONFIG_PATH']}\config.json", "w") as configFile:
             configFile.write(configFileDataString)
     else:
-        with open(f"{appdirs.user_data_dir()}\DeneyapKartWeb\config.json", "r") as configFile:
+        with open(f"{configFileData['CONFIG_PATH']}\config.json", "r") as configFile:
             configFileDataString = configFile.read()
             configFileDataOld = json.loads(configFileDataString)
             for k in configFileData.keys():
@@ -143,7 +143,7 @@ def createConfig() -> dict:
             version = configFileData['AGENT_VERSION'] if "AGENT_VERSION" in configFileData else "0.0.0"
             if (version != InitialConfig.AGENT_VERSION):
                 configFileDataString = json.dumps(configFileData)
-                with open(f"{appdirs.user_data_dir()}\DeneyapKartWeb\config.json", "w") as configFile:
+                with open(f"{configFileData['CONFIG_PATH']}\config.json", "w") as configFile:
                     configFile.write(configFileDataString)
     return configFileData
 
