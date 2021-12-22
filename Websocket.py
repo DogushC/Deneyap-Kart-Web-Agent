@@ -97,7 +97,7 @@ class Websocket(aobject):
             await self.getExampleNames()
 
     async def getExampleNames(self):
-        #TODO add logging
+        #TODO add logging and weak typing
         libs = os.listdir(Data.config["LIB_PATH"])
         examples = {}
         for lib in libs:
@@ -112,6 +112,7 @@ class Websocket(aobject):
         await self.websocket.send(bodyToSend)
 
     async def changeVersion(self, version):
+        #TODO add weak typing
         logging.info(f"Changing version to {version}")
         error = downloadCore(version)
         bodyToSend = {"command":"versionChangeStatus", "success":True}
