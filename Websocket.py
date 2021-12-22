@@ -107,10 +107,6 @@ class Websocket(aobject):
         bodyToSend = json.dumps(bodyToSend)
         await self.websocket.send(bodyToSend)
 
-    def setUploadOptions(self, uploadMode = "auto", uploadSpeed = 921600, CPUFreq=240, flashFreq = 90, flasMode="QIO", partitionScheme="default", debugLevel="None"):
-
-        pass
-
     async def sendResponse(self) -> None:
         """
         Web tarafına mesajın başarı ile alındığını geri bildirir.
