@@ -139,6 +139,7 @@ class Websocket(aobject):
         else:
             # TODO DID NOT TEST THIS YET! TEST BEFORE USING
             logging.info("version changed successfully, writing new version to config file")
+            Data.config['LIB_PATH'] = Data.config['LIB_PATH'].replace(Data.config['DENEYAP_VERSION'], version)
             Data.config['DENEYAP_VERSION'] = version
             Data.updateConfig()
         bodyToSend = json.dumps(bodyToSend)
