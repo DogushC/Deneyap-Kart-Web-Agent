@@ -18,6 +18,7 @@ class Data:
 
     @staticmethod
     def updateConfig():
+        # TODO DID NOT TEST THIS YET! TEST BEFORE USING
         logging.info("config file is changing, new file: ", Data.config)
         configFileDataString = json.dumps(Data.config)
         with open(f"{Data.config['CONFIG_PATH']}\config.json", "w") as configFile:

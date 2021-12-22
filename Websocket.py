@@ -103,6 +103,7 @@ class Websocket(aobject):
             logging.error(error)
             bodyToSend["success"] = False
         else:
+            # TODO DID NOT TEST THIS YET! TEST BEFORE USING
             logging.info("version changed successfully, writing new version to config file")
             Data.config['DENEYAP_VERSION'] = version
             Data.updateConfig()
