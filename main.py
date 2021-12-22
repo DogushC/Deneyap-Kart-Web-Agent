@@ -73,6 +73,7 @@ def main() -> None:
 
 
     if Data.config['runSetup']:
+        logging.info("Running Setup...")
         isSetupSuccess, message = setupDeneyap()
         if not isSetupSuccess:
             logging.critical("Setup exited with error. Exiting program")
@@ -137,16 +138,14 @@ def createConfig() -> dict:
             configFileDataOld = json.loads(configFileDataString)
             for k in configFileData.keys():
                 if not k in configFileDataOld:
-                    logging.info(f"found non-existing config option, adding it. option:{k}")
                     configFileDataOld[k] = configFileData[k]
-            version = configFileDataOld['AGENT_VERSION'] if "AGENT_VERSION" in configFileDataOld else "0.0.0"
+            configFileData = configFileDataOld
+            version = configFileData['AGENT_VERSION'] if "AGENT_VERSION" in configFileData else "0.0.0"
             if (version != InitialConfig.AGENT_VERSION):
-                configFileDataString = json.dumps(configFileDataOld)
+                configFileDataString = json.dumps(configFileData)
                 with open(f"{appdirs.user_data_dir()}\DeneyapKartWeb\config.json", "w") as configFile:
                     configFile.write(configFileDataString)
-
     return configFileData
-
 
 
 if __name__ == '__main__':

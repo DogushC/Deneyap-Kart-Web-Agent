@@ -98,11 +98,13 @@ class Websocket(aobject):
         #TODO trigger this function from web, example body {command:changeVersion, version:1.3.2}
         logging.info(f"Changing version to {version}")
         error = downloadCore(version)
-        bodyToSend = {"command":"versionChange", "success":True}
+        bodyToSend = {"command":"versionChangeStatus", "success":True}
         if error:
             logging.info("Version cant be downloaded")
             logging.info(error)
             bodyToSend["success"] = False
+
+        bodyToSend = json.dumps(bodyToSend)
         await self.websocket.send(bodyToSend)
 
     def setUploadOptions(self, uploadMode = "auto", uploadSpeed = 921600, CPUFreq=240, flashFreq = 90, flasMode="QIO", partitionScheme="default", debugLevel="None"):
@@ -212,4 +214,4 @@ class Websocket(aobject):
             logging.exception("Websocket Mainloop: ")
         finally:
             self.deviceChecker.terminate()
-            self.deviceChecker.join()
+            self.deviceChecker.process.join()
