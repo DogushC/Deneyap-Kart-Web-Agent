@@ -1,7 +1,7 @@
 import asyncio
 import json
 import subprocess
-
+import os
 import config
 from DeviceChecker import DeviceChecker
 from utils import Data, downloadCore
@@ -93,6 +93,23 @@ class Websocket(aobject):
             await self.getVersion()
         elif command == "changeVersion":
             await self.changeVersion(body['version'])
+        elif command == "getExampleNames":
+            await self.getExampleNames()
+
+    async def getExampleNames(self):
+        #TODO add logging
+        libs = os.listdir(Data.config["LIB_PATH"])
+        examples = {}
+        for lib in libs:
+            files = os.listdir(f"{Data.config['LIB_PATH']}/{lib}")
+            if "examples" in files:
+                examples[lib] = os.listdir(f"{Data.config['LIB_PATH']}/{lib}/examples")
+        bodyToSend = {
+            'command':"exampleNames",
+            'names':examples
+        }
+        bodyToSend = json.dumps(bodyToSend)
+        await self.websocket.send(bodyToSend)
 
     async def changeVersion(self, version):
         logging.info(f"Changing version to {version}")
