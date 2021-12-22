@@ -16,6 +16,12 @@ class Data:
     websockets = []
     processes = []
 
+    @staticmethod
+    def updateConfig():
+        configFileDataString = json.dumps(Data.config)
+        with open(f"{Data.config['CONFIG_PATH']}\config.json", "w") as configFile:
+            configFile.write(configFileDataString)
+
 def executeCli(command:str) -> str:
     """
     verilen komutu çalıştırır, komut bitene kadar programı bekletir ve çıktıyı döner.
