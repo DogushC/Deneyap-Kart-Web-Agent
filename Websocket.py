@@ -100,10 +100,13 @@ class Websocket(aobject):
         error = downloadCore(version)
         bodyToSend = {"command":"versionChangeStatus", "success":True}
         if error:
-            logging.info("Version cant be downloaded")
-            logging.info(error)
+            logging.error("Version cant be downloaded")
+            logging.error(error)
             bodyToSend["success"] = False
-
+        else:
+            logging.info("version changed successfully, writing new version to config file")
+            Data.config['DENEYAP_VERSION'] = version
+            Data.updateConfig()
         bodyToSend = json.dumps(bodyToSend)
         await self.websocket.send(bodyToSend)
 
