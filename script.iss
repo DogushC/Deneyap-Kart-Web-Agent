@@ -2,7 +2,7 @@
 ; SEE THE DOCUMENTATION FOR DETAILS ON CREATING INNO SETUP SCRIPT FILES!
 
 #define MyAppName "Deneyap Kart Web"
-#define MyAppVersion "0.11.3"
+#define MyAppVersion "0.11.4"
 #define MyAppPublisher "Türkiye Teknoloji Takımı"
 #define MyAppURL "https://deneyapkart.org"
 #define MyAppExeName "Deneyap Kart Web.exe"
@@ -24,7 +24,7 @@ LicenseFile=C:\Users\kinkintama\Documents\GitHub\Deneyap-Kart-Web-Agent\LICENSE
 ; Uncomment the following line to run in non administrative install mode (install for current user only.)
 ;PrivilegesRequired=lowest
 OutputDir=C:\Users\kinkintama\Desktop\DeneyapKartSetup
-OutputBaseFilename=DeneyapKartWebSetupv0.11.3-beta
+OutputBaseFilename=DeneyapKartWebSetupv0.11.4-beta
 SetupIconFile=C:\Users\kinkintama\Documents\GitHub\Deneyap-Kart-Web-Agent\icon.ico
 Compression=lzma
 SolidCompression=yes
