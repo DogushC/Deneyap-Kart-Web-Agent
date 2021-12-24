@@ -80,7 +80,7 @@ def createInoFile(code:str) -> None:
     logging.info(f"Creating Ino file at {tempPath}")
     createFolder(tempPath)
     createFolder(f"{tempPath}/tempCode")
-    with open(f"{tempPath}/tempCode/tempCode.ino", "w") as inoFile:
+    with open(f"{tempPath}/tempCode/tempCode.ino", "w", encoding="utf-8") as inoFile:
         inoFile.writelines(code)
         logging.info(f"File created")
 

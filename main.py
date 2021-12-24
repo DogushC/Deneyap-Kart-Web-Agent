@@ -68,7 +68,7 @@ def main() -> None:
     thread.start()
 
     logFile = f"{Data.config['LOG_PATH']}\deneyap.log"
-    logging.basicConfig(filename=logFile, filemode='a+', format='%(asctime)s-%(process)d-%(thread)d   %(levelno)d      %(message)s(%(funcName)s-%(lineno)d)', level=logging.INFO)
+    logging.basicConfig(handlers=[logging.FileHandler(filename=logFile, encoding='utf-8', mode='a+')], format='%(asctime)s-%(process)d-%(thread)d   %(levelno)d      %(message)s(%(funcName)s-%(lineno)d)', level=logging.INFO)
     logging.info(f"----------------------- Program Start Agent: v{Data.config['AGENT_VERSION']} Core: v{Data.config['DENEYAP_VERSION']}-----------------------")
 
 
