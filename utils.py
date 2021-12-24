@@ -1,6 +1,6 @@
 import json
 import subprocess
-import time
+import config as InitialConfig
 from pathlib import Path
 import logging
 from DownloadGUI import startGUI
@@ -149,6 +149,7 @@ def setupDeneyap() -> (bool, str):
         return False
     """
     Data.config['runSetup'] = False
+    Data.config['AGENT_VERSION'] = InitialConfig.AGENT_VERSION
     configDataString = json.dumps(Data.config)
     with open(f"{Data.config['CONFIG_PATH']}\config.json", 'w') as configFile:
         logging.info(f"Config File Changed")

@@ -139,6 +139,8 @@ def createConfig() -> dict:
             for k in configFileData.keys():
                 if not k in configFileDataOld:
                     configFileDataOld[k] = configFileData[k]
+                    if k == "AGENT_VERSION":
+                        configFileDataOld[k] = "0.0.0"
             configFileData = configFileDataOld
             version = configFileData['AGENT_VERSION'] if "AGENT_VERSION" in configFileData else "0.0.0"
             if (version != InitialConfig.AGENT_VERSION):
