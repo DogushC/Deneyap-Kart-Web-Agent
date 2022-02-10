@@ -48,7 +48,7 @@ def executeCliPipe(command:str) -> subprocess.PIPE:
     bknz: executeCli("config init") --> cmd ekranına "arduino-cli config init" yazdıracaktır
     """
     logging.info(f"Executing pipe command arduino-cli {command}")
-    pipe = subprocess.Popen(f"arduino-cli {command}", shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    pipe = subprocess.Popen(f"arduino-cli {command}", shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
     return pipe
 
 def evaluatePipe(pipe: subprocess.PIPE) -> bool:
@@ -119,7 +119,7 @@ def setupDeneyap() -> (bool, str):
     else:
         logging.info("package_deneyapkart_index.json is found on config skipping this step")
 
-    t = downloadCore("1.3.2")
+    t = downloadCore(Data.config['DENEYAP_VERSION'])
     if t:
         logging.critical(t)
         process.terminate()

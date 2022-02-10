@@ -53,8 +53,9 @@ class Websocket(aobject):
 
         pipe(subprocess.Popen()): verinin okunacağı pipe
         """
+
         allText = ""
-        for c in iter(lambda: pipe.stdout.read(1), b''):
+        for c in iter(lambda: pipe.stdout.readline(), b''):
             t = c.decode("utf-8")
             allText += t
             bodyToSend = {"command": "consoleLog", "log": t}
@@ -64,6 +65,7 @@ class Websocket(aobject):
 
         t = pipe.communicate()[1].decode("utf-8")
         allText += t
+
         bodyToSend = {"command": "consoleLog", "log": t}
         bodyToSend = json.dumps(bodyToSend)
         logging.info(f"Pipe output {allText}")
