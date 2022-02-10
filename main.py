@@ -57,7 +57,7 @@ def goToLogFile():
     os.startfile(f"{Data.config['LOG_PATH']}")
 
 
-def main() -> None:
+def main(loop) -> None:
     """
     Programın ilk çalışan fonksiyonu, system tray gui'ını, configurasyonu ve websocket server'larını çalıştırır
     """
@@ -86,11 +86,11 @@ def main() -> None:
 
     try:
         start_server = websockets.serve(Websocket, 'localhost', 49182)
-        asyncio.get_event_loop().run_until_complete(start_server)
+        loop.run_until_complete(start_server)
         logging.info("Main Websocket is ready")
 
         start_serial_server = websockets.serve(SerialMonitorWebsocket, 'localhost', 49183)
-        asyncio.get_event_loop().run_until_complete(start_serial_server)
+        loop.run_until_complete(start_serial_server)
         logging.info("Serial Websocket is ready")
     except OSError:
         showError("Program Zaten Çalışıyor.")
@@ -98,7 +98,7 @@ def main() -> None:
 
     try:
         logging.info("Running Forever...")
-        asyncio.get_event_loop().run_forever()
+        loop.run_forever()
 
     except Exception as e:
         logging.exception("InMain: ")
@@ -155,14 +155,15 @@ if __name__ == '__main__':
 
     # Pyinstaller fix
     multiprocessing.freeze_support()
-
+    loop = asyncio.new_event_loop()
+    asyncio.set_event_loop(loop)
     try:
-        main()
+        main(loop)
     except:
         logging.exception("Main Error: ")
     finally:
         for websocket in Data.websockets:
             websocket.closeSocket()
-        asyncio.get_event_loop().stop()
+        loop.stop()
 
     sys.exit()
