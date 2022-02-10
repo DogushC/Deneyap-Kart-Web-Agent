@@ -51,6 +51,21 @@ def executeCliPipe(command:str) -> subprocess.PIPE:
     pipe = subprocess.Popen(f"arduino-cli {command}", shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
     return pipe
 
+
+def executeCli2Pipe(command:str) -> subprocess.PIPE:
+    """
+    verilen komutu çalıştırır, komutun bitmesini beklemez, komutun çalıştığı process ile olan pipe'ı döner.
+
+
+    command(str): cmd'ye yazılacak komut, arduino-cli kısmı hariç
+
+    bknz: executeCli("config init") --> cmd ekranına "arduino-cli config init" yazdıracaktır
+    """
+    logging.info(f"Executing pipe command arduino-cli {command}")
+    pipe = subprocess.Popen(f"arduino-cli {command}", shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    return pipe
+
+
 def evaluatePipe(pipe: subprocess.PIPE) -> bool:
     t = pipe.communicate()[1].decode("utf-8")
     if t:
@@ -85,7 +100,7 @@ def createInoFile(code:str) -> None:
         logging.info(f"File created")
 
 def downloadCore(version):
-    pipe = executeCliPipe(f"core install deneyap:esp32@{version}")
+    pipe = executeCli2Pipe(f"core install deneyap:esp32@{version}")
     return pipe.communicate()[1].decode("utf-8")
 
 def setupDeneyap() -> (bool, str):
@@ -126,7 +141,7 @@ def setupDeneyap() -> (bool, str):
         return False,t
 
     #TODO this part will be added as default to core + adafruit color thingy.
-    pipe = executeCliPipe("lib install Stepper IRremote")
+    pipe = executeCli2Pipe("lib install Stepper IRremote")
     t = pipe.communicate()[1].decode("utf-8")
     if t:
         logging.critical(t)
@@ -134,14 +149,14 @@ def setupDeneyap() -> (bool, str):
         return False,t
 
     """
-    pipe = executeCliPipe("config set library.enable_unsafe_install true")
+    pipe = executeCli2Pipe("config set library.enable_unsafe_install true")
     t = pipe.communicate()[1].decode("utf-8")
     if t:
         logging.critical(t)
         process.terminate()
         return False
 
-    pipe = executeCliPipe("lib install --zip-path libzips/Tone32.zip")
+    pipe = executeCli2Pipe("lib install --zip-path libzips/Tone32.zip")
     t = pipe.communicate()[1].decode("utf-8")
     if t:
         logging.critical(t)
