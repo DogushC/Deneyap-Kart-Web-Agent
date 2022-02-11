@@ -133,7 +133,6 @@ def setupDeneyap() -> (bool, str):
 
     else:
         logging.info("package_deneyapkart_index.json is found on config skipping this step")
-
     t = downloadCore(Data.config['DENEYAP_VERSION'])
     if t:
         logging.critical(t)

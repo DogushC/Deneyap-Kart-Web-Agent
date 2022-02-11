@@ -128,6 +128,7 @@ def createConfig() -> dict:
 
         "runSetup": True
     }
+
     if not isConfigExists:
         configFileDataString = json.dumps(configFileData)
         with open(f"{configFileData['CONFIG_PATH']}\config.json", "w") as configFile:
@@ -141,8 +142,10 @@ def createConfig() -> dict:
                     configFileDataOld[k] = configFileData[k]
                     if k == "AGENT_VERSION":
                         configFileDataOld[k] = "0.0.0"
+
             configFileData = configFileDataOld
             version = configFileData['AGENT_VERSION'] if "AGENT_VERSION" in configFileData else "0.0.0"
+            configFileData['DENEYAP_VERSION'] = InitialConfig.DENEYAP_VERSION
             if (version != InitialConfig.AGENT_VERSION):
                 configFileData['runSetup'] = True
                 configFileDataString = json.dumps(configFileData)
