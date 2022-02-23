@@ -99,7 +99,15 @@ def createInoFile(code:str) -> None:
         inoFile.writelines(code)
         logging.info(f"File created")
 
+
+def updateIndex():
+    logging.info("updating index")
+    pipe = executeCli2Pipe(f"update")
+    return pipe.communicate()[1].decode("utf-8")
+
+
 def downloadCore(version):
+    logging.info(f"installing deneyap:esp32@{version}")
     pipe = executeCli2Pipe(f"core install deneyap:esp32@{version}")
     return pipe.communicate()[1].decode("utf-8")
 
@@ -133,6 +141,13 @@ def setupDeneyap() -> (bool, str):
 
     else:
         logging.info("package_deneyapkart_index.json is found on config skipping this step")
+
+    t = updateIndex()
+    if t:
+        logging.critical(t)
+        process.terminate()
+        return False,t
+
     t = downloadCore(Data.config['DENEYAP_VERSION'])
     if t:
         logging.critical(t)
