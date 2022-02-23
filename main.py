@@ -146,6 +146,8 @@ def createConfig() -> dict:
             configFileData = configFileDataOld
             version = configFileData['AGENT_VERSION'] if "AGENT_VERSION" in configFileData else "0.0.0"
             configFileData['DENEYAP_VERSION'] = InitialConfig.DENEYAP_VERSION
+            configFileData['AGENT_VERSION'] = InitialConfig.AGENT_VERSION
+
             if (version != InitialConfig.AGENT_VERSION):
                 configFileData['runSetup'] = True
                 configFileDataString = json.dumps(configFileData)
