@@ -86,9 +86,9 @@ class Websocket(aobject):
             await self.sendResponse()
 
         if command == "upload":
-            await self.upload(body['board'], body['port'], body["code"])
+            await self.upload(body['board'], body['port'], body["code"], body['partition'])
         elif command == "compile":
-            await self.compile(body['board'], body["code"])
+            await self.compile(body['board'], body["code"], body['partition'])
         elif command == "getBoards":
             await self.getBoards()
         elif command == "getVersion":
@@ -157,7 +157,7 @@ class Websocket(aobject):
         await self.websocket.send(bodyToSend)
 
 
-    async def upload(self, boardName:str, port:str, code:str) -> None:
+    async def upload(self, boardName:str, port:str, code:str, partition:str) -> None:
         """
         Kodun karta yüklenmesi için Board.uploadCode() fonksiyonunu çalştıran fonksiyon
 
@@ -168,9 +168,9 @@ class Websocket(aobject):
         """
         board = Data.boards[port]
         if boardName == "Deneyap Mini":
-            pipe = board.uploadCode(code, config.deneyapMini)
+            pipe = board.uploadCode(code, config.deneyapMini, partition)
         elif boardName == "Deneyap Kart":
-            pipe = board.uploadCode(code, config.deneyapKart)
+            pipe = board.uploadCode(code, config.deneyapKart, partition)
         else:
             logging.warning(f"Specified Board is not found. Board name: {board.boardName}")
             return
@@ -188,7 +188,7 @@ class Websocket(aobject):
         bodyToSend = json.dumps(bodyToSend)
         await self.websocket.send(bodyToSend)
 
-    async def compile(self, boardName:str, code:str) -> None:
+    async def compile(self, boardName:str, code:str, partition) -> None:
         """
         Kodun derlenmesi için Board.compileCode() fonksiyonunu çalştıran fonksiyon
 
@@ -198,9 +198,9 @@ class Websocket(aobject):
         code (str): kodun kendisi.
         """
         if boardName == "Deneyap Mini":
-            pipe = Board.compileCode(code, config.deneyapMini)
+            pipe = Board.compileCode(code, config.deneyapMini, partition)
         elif boardName == "Deneyap Kart":
-            pipe = Board.compileCode(code, config.deneyapKart)
+            pipe = Board.compileCode(code, config.deneyapKart, partition)
         else:
             logging.warning(f"Specified Board is not found. Board name: {boardName}")
             return
