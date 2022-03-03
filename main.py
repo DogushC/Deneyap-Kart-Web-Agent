@@ -147,6 +147,8 @@ def createConfig() -> dict:
             version = configFileData['AGENT_VERSION'] if "AGENT_VERSION" in configFileData else "0.0.0"
             configFileData['DENEYAP_VERSION'] = InitialConfig.DENEYAP_VERSION
             configFileData['AGENT_VERSION'] = InitialConfig.AGENT_VERSION
+            configFileData['LIB_PATH'] = InitialConfig.LIB_PATH
+
 
             if (version != InitialConfig.AGENT_VERSION):
                 configFileData['runSetup'] = True
