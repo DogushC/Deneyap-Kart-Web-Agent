@@ -86,9 +86,9 @@ class Websocket(aobject):
             await self.sendResponse()
 
         if command == "upload":
-            await self.upload(body['board'], body['port'], body["code"], body['partition'])
+            await self.upload(body['board'], body['port'], body["code"], body['uploadOptions'])
         elif command == "compile":
-            await self.compile(body['board'], body["code"], body['partition'])
+            await self.compile(body['board'], body["code"], body['uploadOptions'])
         elif command == "getBoards":
             await self.getBoards()
         elif command == "getVersion":
@@ -157,7 +157,7 @@ class Websocket(aobject):
         await self.websocket.send(bodyToSend)
 
 
-    async def upload(self, boardName:str, port:str, code:str, partition:str) -> None:
+    async def upload(self, fqbn:str, port:str, code:str, uploadOptions:str) -> None:
         """
         Kodun karta yüklenmesi için Board.uploadCode() fonksiyonunu çalştıran fonksiyon
 
@@ -167,13 +167,8 @@ class Websocket(aobject):
         code (str): kodun kendisi.
         """
         board = Data.boards[port]
-        if boardName == "Deneyap Mini":
-            pipe = board.uploadCode(code, config.deneyapMini, partition)
-        elif boardName == "Deneyap Kart":
-            pipe = board.uploadCode(code, config.deneyapKart, partition)
-        else:
-            logging.warning(f"Specified Board is not found. Board name: {board.boardName}")
-            return
+        pipe = board.uploadCode(code, fqbn, uploadOptions)
+
 
         bodyToSend = {"command": "cleanConsoleLog", "log": ""}
         bodyToSend = json.dumps(bodyToSend)
@@ -188,7 +183,7 @@ class Websocket(aobject):
         bodyToSend = json.dumps(bodyToSend)
         await self.websocket.send(bodyToSend)
 
-    async def compile(self, boardName:str, code:str, partition) -> None:
+    async def compile(self, fqbn:str, code:str, uploadOptions) -> None:
         """
         Kodun derlenmesi için Board.compileCode() fonksiyonunu çalştıran fonksiyon
 
@@ -197,13 +192,8 @@ class Websocket(aobject):
 
         code (str): kodun kendisi.
         """
-        if boardName == "Deneyap Mini":
-            pipe = Board.compileCode(code, config.deneyapMini, partition)
-        elif boardName == "Deneyap Kart":
-            pipe = Board.compileCode(code, config.deneyapKart, partition)
-        else:
-            logging.warning(f"Specified Board is not found. Board name: {boardName}")
-            return
+
+        pipe = Board.compileCode(code, fqbn, uploadOptions)
 
         bodyToSend = {"command": "cleanConsoleLog", "log": "Compling Code...\n"}
         bodyToSend = json.dumps(bodyToSend)

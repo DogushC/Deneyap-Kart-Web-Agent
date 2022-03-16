@@ -24,7 +24,7 @@ class Board:
         self.port = port
         logging.info(f"Board with Name:{boardName}, FQBN:{fqbn}, Port:{port} is created")
 
-    def uploadCode(self, code:str, fqbn:str, partition:str) -> subprocess.PIPE:
+    def uploadCode(self, code:str, fqbn:str, uploadOptions:str) -> subprocess.PIPE:
         """
         Kodu karta yükleyen fonksiyon
 
@@ -35,11 +35,11 @@ class Board:
         """
         logging.info(f"Uploading code to {self.boardName}:{self.port}")
         createInoFile(code)
-        pipe = executeCliPipe(f"compile --port {self.port} --upload --fqbn {fqbn}:PartitionScheme={partition} {config.TEMP_PATH}/tempCode")
+        pipe = executeCliPipe(f"compile --port {self.port} --upload --fqbn {fqbn}:{uploadOptions} {config.TEMP_PATH}/tempCode")
         return pipe
 
     @staticmethod
-    def compileCode(code:str, fqbn:str, partition:str) -> subprocess.PIPE:
+    def compileCode(code:str, fqbn:str, uploadOptions:str) -> subprocess.PIPE:
         """
         Kodu derleyen fonksiyon
 
@@ -50,7 +50,7 @@ class Board:
         """
         logging.info(f"Compiling code for {fqbn}")
         createInoFile(code)
-        pipe = executeCliPipe(f"compile --fqbn {fqbn}:PartitionScheme={partition} {config.TEMP_PATH}/tempCode")
+        pipe = executeCliPipe(f"compile --fqbn {fqbn}:{uploadOptions} {config.TEMP_PATH}/tempCode")
         return pipe
 
     @staticmethod
