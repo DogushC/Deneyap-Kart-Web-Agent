@@ -63,8 +63,9 @@ class Websocket(aobject):
             await self.websocket.send(bodyToSend)
             await asyncio.sleep(0)
 
-        t = pipe.communicate()[1].decode("utf-8")
-        allText += t
+        if pipe.communicate()[1]:
+            t = pipe.communicate()[1].decode("utf-8")
+            allText += t
 
         bodyToSend = {"command": "consoleLog", "log": t}
         bodyToSend = json.dumps(bodyToSend)
