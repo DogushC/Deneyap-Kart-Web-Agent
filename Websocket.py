@@ -105,6 +105,8 @@ class Websocket(aobject):
             await self.searchLibrary(body['searchTerm'])
         elif command == "downloadLibrary":
             await self.downloadLibrary(body['libName'], body['libVersion'])
+        elif command == "getCoreVersion":
+            await self.getCoreVersion()
 
 
     async def downloadLibrary(self, libName, libVersion):
@@ -172,6 +174,7 @@ class Websocket(aobject):
             Data.config['LIB_PATH'] = Data.config['LIB_PATH'].replace(Data.config['DENEYAP_VERSION'], version)
             Data.config['DENEYAP_VERSION'] = version
             Data.updateConfig()
+
         bodyToSend = json.dumps(bodyToSend)
         await self.websocket.send(bodyToSend)
 
@@ -207,7 +210,15 @@ class Websocket(aobject):
         """
         Versiyonu Webe Gönderir
         """
-        bodyToSend = {"command": "returnVersion", "version": config.AGENT_VERSION}
+        bodyToSend = {"command": "returnVersion", "version": Data.config["AGENT_VERSION"]}
+        bodyToSend = json.dumps(bodyToSend)
+        await self.websocket.send(bodyToSend)
+
+    async def getCoreVersion(self) -> None:
+        """
+        Core Versiyonu Webe Gönderir
+        """
+        bodyToSend = {"command": "returnCoreVersion", "version": Data.config["DENEYAP_VERSION"]}
         bodyToSend = json.dumps(bodyToSend)
         await self.websocket.send(bodyToSend)
 
