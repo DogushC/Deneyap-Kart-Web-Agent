@@ -10,7 +10,7 @@ from multiprocessing import Queue
 import logging
 from websockets.exceptions import ConnectionClosedOK
 import websockets
-from LibraryDownloader import searchLibrary
+from LibraryDownloader import searchLibrary, installLibrary
 
 class aobject(object):
     """Inheriting this class allows you to define an async __init__.
@@ -103,6 +103,19 @@ class Websocket(aobject):
             await self.getExample(body['lib'], body['example'])
         elif command == "searchLibrary":
             await self.searchLibrary(body['searchTerm'])
+        elif command == "downloadLibrary":
+            await self.downloadLibrary(body['libName'], body['libVersion'])
+
+
+    async def downloadLibrary(self, libName, libVersion):
+        #TODO weak typing
+        result = installLibrary(libName, libVersion)
+        bodyToSend = {
+            "command": "downloadLibraryResult",
+            "result": result
+        }
+        bodyToSend = json.dumps(bodyToSend)
+        await self.websocket.send(bodyToSend)
 
 
     async def searchLibrary(self, searchTerm):
