@@ -22,9 +22,7 @@ with open("script.iss", "r+") as buildISS:
             line = line.replace(line[startIndex + 1:endIndex], config.AGENT_VERSION)
 
         if ("OutputBaseFilename=DeneyapKartWebSetupv" in line):
-            startIndex = line.find("DeneyapKartWebSetupv")
-            endIndex = line.rfind("-")
-            line = line.replace(line[startIndex + 20:endIndex], config.AGENT_VERSION)
+            line = line.replace(line[39:], config.AGENT_VERSION) +"\n"
         newFile+=line
 
 with open("script.iss", "w") as buildISS:
@@ -37,6 +35,6 @@ input("Press Enter To Continue: ")
 call1='$TestCodeSigningCert = New-SelfSignedCertificate -DnsName https://deneyapkart.org -Type CodeSigning -CertStoreLocation Cert:\CurrentUser\My'
 call2='Export-Certificate -FilePath exported_cert.cer -Cert $TestCodeSigningCert'
 call3='Import-Certificate -FilePath exported_cert.cer -CertStoreLocation Cert:\CurrentUser\Root'
-call4=f'Set-AuthenticodeSignature -Certificate $TestCodeSigningCert -FilePath C:/Users/Kinkintama/Desktop/Deneyap/DeneyapKartSetup/DeneyapKartWebSetupv{config.AGENT_VERSION}-beta.exe'
+call4=f'Set-AuthenticodeSignature -Certificate $TestCodeSigningCert -FilePath C:/Users/Kinkintama/Desktop/Deneyap/DeneyapKartSetup/DeneyapKartWebSetupv{config.AGENT_VERSION}.exe'
 
 os.system(f'C:/Windows/System32/WindowsPowerShell/v1.0/powershell.exe {call1} ; {call2} ; {call3} ; {call4}',)
