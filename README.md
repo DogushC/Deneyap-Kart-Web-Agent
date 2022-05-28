@@ -10,7 +10,7 @@ Basicly this program uses websockets to connect websites front end communicates 
 
 Can be modified for other hardwares just as esp and arduino.
 
-Front-end code is blockWebsocket.js file.
+Front-end code is in blockWebsocket.js file.
 
 ## How To Run
 You can basicly download .exe from last release or
