@@ -8,7 +8,7 @@ from multiprocessing import Process
 
 class Data:
     """
-    Program içerisinde geçici olarak tutulacak verileri tutar
+    keeps data on runtime
     """
     boards  = {}
     threads = []
@@ -18,7 +18,9 @@ class Data:
 
     @staticmethod
     def updateConfig():
-        # TODO DID NOT TEST THIS YET! TEST BEFORE USING
+        """
+        update config files to make changes permenant.
+        """
         logging.info("config file is changing, new file: ", Data.config)
         configFileDataString = json.dumps(Data.config)
         with open(f"{Data.config['CONFIG_PATH']}\config.json", "w") as configFile:
@@ -27,39 +29,43 @@ class Data:
 
 def executeCli(command:str) -> str:
     """
-    verilen komutu çalıştırır, komut bitene kadar programı bekletir ve çıktıyı döner.
+    runs command for arduino-cli, waits until arduino-cli returns then returns its output.
 
+    :param command: command that will run, basicly executeCli("config init") --> runs "arduino-cli config init" on cmd
+    :type command: str
 
-    command(str): cmd'ye yazılacak komut, arduino-cli kısmı hariç
-
-    bknz: executeCli("config init") --> cmd ekranına "arduino-cli config init" yazdıracaktır
+    :return: output from arduino-cli, depended of command.
+    :rtype: str
     """
+
     logging.info(f"Executing command arduino-cli {command}")
     returnString = subprocess.check_output(f"arduino-cli {command}", shell=True)
     return returnString.decode("utf-8")
 
-def executeCliPipe(command:str) -> subprocess.PIPE:
+def executeCliPipe(command:str) -> subprocess.Popen:
     """
-    verilen komutu çalıştırır, komutun bitmesini beklemez, komutun çalıştığı process ile olan pipe'ı döner.
+    runs command for arduino-cli, does not wait for response instead returns subprocess.
 
+    :param command: command that will run, basicly executeCliPipe("config init") --> runs "arduino-cli config init" on cmd
+    :type command: str
 
-    command(str): cmd'ye yazılacak komut, arduino-cli kısmı hariç
-
-    bknz: executeCli("config init") --> cmd ekranına "arduino-cli config init" yazdıracaktır
+    :return: subprocess of command that run for accessing output live.
+    :rtype: subprocess.Popen
     """
     logging.info(f"Executing pipe command arduino-cli {command}")
     pipe = subprocess.Popen(f"arduino-cli {command}", shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
     return pipe
 
 
-def executeCli2Pipe(command:str) -> subprocess.PIPE:
+def executeCli2Pipe(command:str) -> subprocess.Popen:
     """
-    verilen komutu çalıştırır, komutun bitmesini beklemez, komutun çalıştığı process ile olan pipe'ı döner.
+    runs command for arduino-cli, does not wait for response instead returns subprocess.
 
+    :param command: command that will run, basicly executeCliPipe("config init") --> runs "arduino-cli config init" on cmd
+    :type command: str
 
-    command(str): cmd'ye yazılacak komut, arduino-cli kısmı hariç
-
-    bknz: executeCli("config init") --> cmd ekranına "arduino-cli config init" yazdıracaktır
+    :return: subprocess of command that run for accessing output and error live.
+    :rtype: subprocess.Popen
     """
     logging.info(f"Executing pipe command arduino-cli {command}")
     pipe = subprocess.Popen(f"arduino-cli {command}", shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
@@ -67,21 +73,23 @@ def executeCli2Pipe(command:str) -> subprocess.PIPE:
 
 def createFolder(fileDir:str) -> None:
     """
-    Yeni klasör oluşturur. Eğer var ise, bir değişiklik yapmaz
+    creates new folder, if it exist does not do anything
 
-
-    fileDir(str):oluşturulacak klasörün yolu
+    :param fileDir: directory and name of the folder that will be created
+    :type fileDir: str
     """
+
     logging.info(f"Creating folder {fileDir}")
     Path(fileDir).mkdir(parents=True, exist_ok=True)
 
 def createInoFile(code:str) -> None:
     """
-    .ino dosyasını geçici klasörün içerisine oluşturur.
+    creates .ino file for arduino-cli to compile and upload code.
 
-
-    code(str): kayıt edilecek kod
+    :param code: code that will be written to file. send by front-end
+    :type code: str
     """
+
     tempPath = Data.config["TEMP_PATH"]
     logging.info(f"Creating Ino file at {tempPath}")
     createFolder(tempPath)
@@ -91,20 +99,37 @@ def createInoFile(code:str) -> None:
         logging.info(f"File created")
 
 
-def updateIndex():
+def updateIndex() -> str:
+    """
+    updates arduino-cli index. in order to renew libraries
+
+    :return: result of 'arduino-cli update' command
+    :rtype: str
+    """
     logging.info("updating index")
     pipe = executeCli2Pipe(f"update")
     return pipe.communicate()[1].decode("utf-8")
 
+def downloadCore(version:str)->str:
+    """
+    :param version: version of deneyapkart core that will be downloaded.
+    :type version: str
 
-def downloadCore(version):
+    :return: output of 'arduino-cli core install'
+    :rtype: str
+    """
     logging.info(f"installing deneyap:esp32@{version}")
     pipe = executeCli2Pipe(f"core install deneyap:esp32@{version}")
     return pipe.communicate()[1].decode("utf-8")
 
 def setupDeneyap() -> (bool, str):
     """
-    Program ilk yüklendiğinde çalıştırılır, arduino-cli'in konfigurasyonunu yapar, deneyap kartı arduino-cli'a ekler ve yükler.
+    runs when program first downloaded or updated.
+    configures deneyap kart to arduino-cli
+    downloads some libraries
+
+    :return: first element is whetever setup was success or not, second element is error message.
+    :rtype: (bool, str)
     """
 
     process = Process(target=startGUI)
@@ -153,21 +178,6 @@ def setupDeneyap() -> (bool, str):
         process.terminate()
         return False,t
 
-    """
-    pipe = executeCli2Pipe("config set library.enable_unsafe_install true")
-    t = pipe.communicate()[1].decode("utf-8")
-    if t:
-        logging.critical(t)
-        process.terminate()
-        return False
-
-    pipe = executeCli2Pipe("lib install --zip-path libzips/Tone32.zip")
-    t = pipe.communicate()[1].decode("utf-8")
-    if t:
-        logging.critical(t)
-        process.terminate()
-        return False
-    """
     Data.config['runSetup'] = False
     Data.config['AGENT_VERSION'] = InitialConfig.AGENT_VERSION
     configDataString = json.dumps(Data.config)

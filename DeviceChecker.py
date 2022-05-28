@@ -6,14 +6,18 @@ import logging
 
 class DeviceChecker:
     """
-    Bilgisayarlara bağlı olan kartları devamlı olarak kontrol eden sınıf, ayrı bir process açarak çalışır
-
+    Checks devices that are plugged or on plugged, works on a diffrent process.
 
     queue(Manager.Queue): Ana process'e veri göndermek için
 
     startStopQueue(Manager.Queue): Dışarıdan gelen veriyi almak
     """
-    def __init__(self, queue):
+    def __init__(self, queue: multiprocessing.Queue):
+        """
+        :param queue: queue for communicationg between Websocket class and DeviceChecker
+        :type queue: multiprocessing.Queue
+        """
+
         self.queue = queue
         self.startStopQueue = Queue()
         self.process = Process(target=self.queuer, args=(self.queue, self.startStopQueue))
@@ -23,14 +27,16 @@ class DeviceChecker:
 
     def queuer(self, queue: multiprocessing.Queue, startStopQueue: multiprocessing.Queue) -> None:
         """
-        Yeni kart bulunduğunda ana procces's queue aracılığı ile bildirim gönderir. Yeni kartların eklenip eklenmediğini
-        while döngüsü içerisinde kontrol eder.
+        send signal to Websocket class when a new device is found. checks if new device added or any device removed
+        every second.
 
+        :param queue: queue for getting orders from Websocket class
+        :type queue: multiprocessing.Queue
 
-        queue(Manager.Queue): Ana process'e veri göndermek için
-
-        startStopQueue(Manager.Queue): Dışarıdan gelen veriyi almak
+        :param startStopQueue: queue for stoping, starting and terminating deviceChecker
+        :type startStopQueue: multiprocessing.Queue
         """
+
         logging.info(f"Process Started Succesfully")
         runner = False
         old_devices = self.enumerate_serial_devices()
@@ -57,34 +63,44 @@ class DeviceChecker:
             time.sleep(1)
     def start(self) -> None:
         """
-        querer fonksiyonun içerisinde ki while döngüsünün çalışmasını sağlar
+        Allows querer to run 'if runner' block in querer while loop
         """
         self.startStopQueue.put({"command":"startDeviceChecker"})
         logging.info(f"Starting device checker")
 
     def stop(self) -> None:
         """
-        querer fonksiyonun içerisinde ki while döngüsünün durmasını sağlar
+        Stops 'if runner' block in querer while loop
         """
+
         self.startStopQueue.put({"command": "stopDeviceChecker"})
         logging.info(f"Stoping device checker")
 
     def terminate(self) -> None:
         """
-        querer fonksiyonun içerisinde ki while döngüsünü bitirir.
+        makes querer break while loop causing process to end
         """
         self.startStopQueue.put({"command": "terminateDeviceChecker"})
         logging.info(f"Termitating device checker")
 
     def enumerate_serial_devices(self) -> set:
         """
-        bilgisayarın portlarına takılı olan kartları çeker
+        takes set of plugged devices
+
+        :return: returns a set of devices
+        :rtype: set
         """
         return set([item for item in list_ports.comports()])
 
     def check_new_devices(self, old_devices: set) -> (set, bool):
         """
-        eski kartlar ile yeni çekilen kartları karşılaştırarak, eklenen ya da çıkarılan kartın olup olmadığına bakar
+        checks if any device is added or removed
+
+        :param old_devices: old detected devices, comes from previous loop. can be emtpty
+        :type old_devices: set
+
+        :return: returns a tuple, first element is all devices second element is whetever it is diffrent from previous loop or not
+        :rtype: (set, bool)
         """
         devices = self.enumerate_serial_devices()
         added = devices.difference(old_devices)

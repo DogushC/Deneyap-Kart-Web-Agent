@@ -1,3 +1,28 @@
+"""
+Script to create exe
+
+How to use:
+    make sure, icon.ico, arduino-cli, script.iss is exist and inno setup is installed
+
+    In script.iss change:
+        Line 23, LicenseFile
+        Line 26, OutputDir
+        Line 28, SetupIconFİle
+        Line 41, Source
+        Line 42, Source
+    according to your path. also call4 variable in this file (Line 63) should be changed according to Line 26 (OutputDir).
+
+    Then:
+
+    Delete old build and dist files if exists
+    run "python build.py"
+    Inno setup will open, Run it with top left play button or by pressing F9. after it is completed close inno setup
+    Press enter at command line to continue
+    Windows will ask for certificate. confirm
+
+    and you are done.
+"""
+
 import os
 import shutil
 import config

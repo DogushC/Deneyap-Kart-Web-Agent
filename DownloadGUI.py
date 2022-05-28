@@ -6,6 +6,10 @@ lbl = ""
 window = ""
 
 def startGUI() -> None:
+    """
+    Starts tkinter gui to indicate core and library download
+    """
+
     global lbl
     global window
 
@@ -20,6 +24,9 @@ def startGUI() -> None:
     window.mainloop()
 
 def animateText() -> None:
+    """
+    to make sure user understants it is not hanging, dots keeps moving.
+    """
     i = 0
     while True:
         i+=1

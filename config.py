@@ -1,5 +1,5 @@
 """
-İndirildiği anda ki konfigürasyon ayarları
+Initial configuration for new downloads and updates
 """
 import appdirs
 

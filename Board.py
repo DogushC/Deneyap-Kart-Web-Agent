@@ -5,59 +5,93 @@ import json
 import logging
 import websockets
 
+
 class Board:
     """
-    Bilgisayara takılan bir kartı temsil eder.
-
+    Represents a deneyap kart that plugged to computer
 
     boardName (str): Kartın adı (Deneyap Kart ya da Deneyap Mini)
-
     fqbn (str): fully qualified board name, arduino-cli'in kartı gördüğü isim
-
     port (str): kartın bağlı olduğu port
-
     ID (int): karta atanan rastgele id, (1000000 - 9999999) arası, web tarafında eşlemek için kullanılır
     """
-    def __init__(self, boardName: str, fqbn: str, port:str):
+    def __init__(self, boardName: str, fqbn: str, port:str)->None:
+        """
+        :param boardName: board name, currently Deneyap Kart or Deneyap Mini
+        :type boardName: str
+
+        :param fqbn: fully qualified board name, board name that recognized by arduino-cli
+            deneyap:esp32:dydk_mpv10 for Deneyap Kart
+            deneyap:esp32:dym_mpv10 for Deneyap Mini
+        :type fqbn: str
+
+        :param port: COM port that board connected to like COM4
+        :type port: str
+
+        Deneyap mini is not recognized by Windows 10, so it is taken as Unknown.
+        """
+
         self.boardName = boardName
         self.fqbn = fqbn
         self.port = port
         logging.info(f"Board with Name:{boardName}, FQBN:{fqbn}, Port:{port} is created")
 
-    def uploadCode(self, code:str, fqbn:str, uploadOptions:str) -> subprocess.PIPE:
+    def uploadCode(self, code:str, fqbn:str, uploadOptions:str) -> subprocess.Popen:
         """
-        Kodu karta yükleyen fonksiyon
+        Compiles and uploads code to board
+
+        :param code: code that sent by front-end
+        :type code: str
+
+        :param fqbn: fully qualified board name, board name that recognized by arduino-cli
+            deneyap:esp32:dydk_mpv10 for Deneyap Kart
+            deneyap:esp32:dym_mpv10 for Deneyap Mini
+        :type fqbn: str
+
+        :param uploadOptions: upload options for board. it is board spesific and sent by front-end as parsed.
+        :type uploadOptions: str
 
 
-        code (str): web tarafından gelen kod
-
-        fqbn (str): kodun arduino-cli tarafında ki adı
+        :return: returns subprocess.Popen object to write output to front-end
+        :rtype: subprocess.Popen
         """
+
         logging.info(f"Uploading code to {self.boardName}:{self.port}")
-        createInoFile(code)
+        createInoFile(code) #create Ino file so arduino-cli can read it to compile and upload to board
         pipe = executeCliPipe(f"compile --port {self.port} --upload --fqbn {fqbn}:{uploadOptions} {config.TEMP_PATH}/tempCode")
         return pipe
 
     @staticmethod
-    def compileCode(code:str, fqbn:str, uploadOptions:str) -> subprocess.PIPE:
+    def compileCode(code:str, fqbn:str, uploadOptions:str) -> subprocess.Popen:
         """
-        Kodu derleyen fonksiyon
+        compiles code
 
+        :param code: code that sent by front-end
+        :type code: str
 
-        code (str): web tarafından gelen kod
+        :param fqbn: fully qualified board name, board name that recognized by arduino-cli
+            deneyap:esp32:dydk_mpv10 for Deneyap Kart
+            deneyap:esp32:dym_mpv10 for Deneyap Mini
+        :type fqbn: str
 
-        fqbn (str): kodun arduino-cli tarafında ki adı
+        :param uploadOptions: upload options for board. it is board spesific and sent by front-end as parsed.
+        :type uploadOptions: str
+
+        :return: returns subprocess.Popen object to write output to front-end
+        :rtype: subprocess.Popen
         """
+
         logging.info(f"Compiling code for {fqbn}")
-        createInoFile(code)
+        createInoFile(code)  #create Ino file so arduino-cli can read it to compile
         pipe = executeCliPipe(f"compile --fqbn {fqbn}:{uploadOptions} {config.TEMP_PATH}/tempCode")
         return pipe
 
     @staticmethod
     def refreshBoards() -> None:
         """
-        bilgisayara bağlı olan kartları kontrol eder ve Data class'ını günceller
+        Checks connected devices and append them to Data class for later use
         """
+
         logging.info(f"Refresing Boards")
         boardListString = executeCli("board list --format json")
         boardsJson = json.loads(boardListString)
@@ -66,7 +100,7 @@ class Board:
             if "matching_boards" in boardJson:
                 boardName = boardJson["matching_boards"][0]["name"]  # TODO investigate why index 0?
                 boardId = boardJson["matching_boards"][0]["fqbn"]
-            else:
+            else:#deneyap mini is goes in to here.
                 boardName = "Unknown"
                 boardId = ""
 
@@ -76,13 +110,14 @@ class Board:
             Data.boards[boardPort] = board
 
     @staticmethod
-    async def sendBoardInfo(websocket: websockets) -> None: #TODO it is not websockets but websocket connection, do proper typing
+    async def sendBoardInfo(websocket: websockets.legacy.server.WebSocketServerProtocol) -> None:
         """
-        Bilgisayara bağlı olan kartları websocket aracılığı ile web'e gönderir.
+        sends all board info to front-end via websocket
 
-
-        websocket (websocket): web tarafı iletişime geçmeyi sağlayan websocket objesi.
+        :param websocket: websocket connection to front-end
+        :type websocket: websockets.legacy.server.WebSocketServerProtocol
         """
+
         body = {"command": "returnBoards", "boards": []}
         for k, v in Data.boards.items():
             body['boards'].append({"boardName": v.boardName, "port": v.port})

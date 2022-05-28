@@ -13,9 +13,12 @@ import websockets
 from LibraryDownloader import searchLibrary, installLibrary
 
 class aobject(object):
-    """Inheriting this class allows you to define an async __init__.
+    """
+    Inheriting this class allows you to define an async __init__.
 
     So you can create objects by doing something like `await MyClass(params)`
+
+    credit:https://stackoverflow.com/questions/33128325/how-to-set-class-attribute-with-await-in-init
     """
     async def __new__(cls, *a, **kw):
         instance = super().__new__(cls)
@@ -28,18 +31,21 @@ class aobject(object):
 
 class Websocket(aobject):
     """
-    Ana websocket'in çalıştığı sınıf, her bir sites bağlantısı için bir websocket objesi oluşturulur.
-
-
-    websocket(websocket): web tarafı ile yapılan socket bağlantısının objesi
-
-    path(str):
+    For main communication between front-end and agent, for every front-end connection, one object is created
     """
-    async def __init__(self, websocket: websockets, path:str): #TODO proper websocket typing
+
+    async def __init__(self, websocket: websockets.legacy.server.WebSocketServerProtocol, path:str):
+        """
+        :param websocket: websocket connection to front-end
+        :type websocket: websockets.legacy.server.WebSocketServerProtocol
+
+        :param path: need for websockets library to work. not used in this project
+        :type path: str
+        """
+
         logging.info(f"Websocket object is created")
         Data.websockets.append(self)
         self.websocket = websocket
-
         self.queue = Queue()
 
         self.deviceChecker = DeviceChecker(self.queue)
@@ -47,12 +53,12 @@ class Websocket(aobject):
 
         await self.mainLoop()
 
-    async def readAndSend(self, pipe: subprocess.PIPE) -> None:
+    async def readAndSend(self, pipe: subprocess.Popen) -> None:
         """
-        daha önceden açılmış olan pipe'tan  veriyi okur ve websocket aracılığı ile web tarafına gönderir.
+        reads subporcess.Popen live and sends it to front-end to be written to console
 
-
-        pipe(subprocess.Popen()): verinin okunacağı pipe
+        :param pipe: subprocess that will be readed. name is pipe, but its not pipe. my bad.
+        :type pipe: subprocess.Popen
         """
 
         allText = ""
@@ -75,10 +81,12 @@ class Websocket(aobject):
 
     async def commandParser(self, body: dict) -> None:
         """
-        web tarfından gelen bilgiyi ilgili fonksiyonlara yönlendirir.
+        message send from front-end is first comes to here to redirect appropriate function
+        messages related to main communication comes to this class. other messages goes to SerialMonitor class.
+        upload message is sent both this class and SerialMonitor class. when new code is uploading serial monitor has to be closed.
 
-
-        body(dict): Json formatında gelen bir dictionary, web tarafından gelen komutu ve ilgili alanları barındırır
+        :param body: data that sent from front-end. %100 has 'command' other keys are depended on command
+        :type body: dict
         """
         command = body['command']
 
@@ -109,8 +117,15 @@ class Websocket(aobject):
             await self.getCoreVersion()
 
 
-    async def downloadLibrary(self, libName, libVersion):
-        #TODO weak typing
+    async def downloadLibrary(self, libName:str, libVersion:str)->None:
+        """
+        :param libName: full name of the library
+        :type libName: str
+
+        :param libVersion: version of the library, like 1.3.4
+        :type libVersion: str
+        """
+
         result = installLibrary(libName, libVersion)
         bodyToSend = {
             "command": "downloadLibraryResult",
@@ -120,8 +135,16 @@ class Websocket(aobject):
         await self.websocket.send(bodyToSend)
 
 
-    async def searchLibrary(self, searchTerm):
-        #TODO weak typing
+    async def searchLibrary(self, searchTerm)->None:
+        """
+        for searching libraries using arduino-cli
+
+        :param searchTerm: string that typed to front-end. will be search using arduino-cli
+        :type searchTerm: str
+
+        :return: returns string but in json format, will be converted to json on front-end
+        :rtype: str
+        """
         libraries = searchLibrary(searchTerm)
         bodyToSend = {
             "command" : "searchLibraryResult",
@@ -130,37 +153,15 @@ class Websocket(aobject):
         bodyToSend = json.dumps(bodyToSend)
         await self.websocket.send(bodyToSend)
 
-    async def getExample(self, libName, exampleName):
-        #TODO add logging and weak typing
-        #TODO THIS FUNCTION IS NOT TESTED. TEST IT BEFORE USING!
-        with open(f"{Data.config['LIB_PATH']}/{libName}/examples/{exampleName}/{exampleName}.ino", 'r') as ex:
-            code = ex.read()
+    async def changeVersion(self, version:str)->None:
+        """
+        for chaning deneyap core version. LIB_PATH, DENEYAP_VERSION varibles in config file will also change accordingly
 
-        bodyToSend = {
-            "command":"example",
-            "code": code,
-        }
-        bodyToSend = json.dumps(bodyToSend)
-        await self.websocket.send(bodyToSend)
 
-    async def getExampleNames(self):
-        #TODO add logging and weak typing
-        #TODO THIS FUNCTION IS NOT TESTED. TEST IT BEFORE USING!
-        libs = os.listdir(Data.config["LIB_PATH"])
-        examples = {}
-        for lib in libs:
-            files = os.listdir(f"{Data.config['LIB_PATH']}/{lib}")
-            if "examples" in files:
-                examples[lib] = os.listdir(f"{Data.config['LIB_PATH']}/{lib}/examples")
-        bodyToSend = {
-            'command':"exampleNames",
-            'names':examples
-        }
-        bodyToSend = json.dumps(bodyToSend)
-        await self.websocket.send(bodyToSend)
+        :param version: version of core that will be installed
+        :type version: str
+        """
 
-    async def changeVersion(self, version):
-        #TODO add weak typing
         logging.info(f"Changing version to {version}")
         error = downloadCore(version)
         bodyToSend = {"command":"versionChangeStatus", "success":True}
@@ -169,7 +170,6 @@ class Websocket(aobject):
             logging.error(error)
             bodyToSend["success"] = False
         else:
-            # TODO DID NOT TEST THIS YET! TEST BEFORE USING
             logging.info("version changed successfully, writing new version to config file")
             Data.config['LIB_PATH'] = Data.config['LIB_PATH'].replace(Data.config['DENEYAP_VERSION'], version)
             Data.config['DENEYAP_VERSION'] = version
@@ -180,7 +180,7 @@ class Websocket(aobject):
 
     async def sendResponse(self) -> None:
         """
-        Web tarafına mesajın başarı ile alındığını geri bildirir.
+        send message back to front-end to say that message is received succesfully if this message is not send, front-end send message again.
         """
         logging.info(f"Main Websocket sending response back")
         bodyToSend = {"command": "response"}
@@ -190,13 +190,23 @@ class Websocket(aobject):
 
     async def upload(self, fqbn:str, port:str, code:str, uploadOptions:str) -> None:
         """
-        Kodun karta yüklenmesi için Board.uploadCode() fonksiyonunu çalştıran fonksiyon
+        Compiles and uploads code to board
 
+        :param fqbn: fully qualified board name, board name that recognized by arduino-cli
+            deneyap:esp32:dydk_mpv10 for Deneyap Kart
+            deneyap:esp32:dym_mpv10 for Deneyap Mini
+        :type fqbn: str
 
-        ID (int): kodun yükleneceği kartın ID'si
+        :param port: port that device is on like COM4
+        :type port: str
 
-        code (str): kodun kendisi.
+        :param code: code that sent by front-end
+        :type code: str
+
+        :param uploadOptions: upload options for board. it is board spesific and sent by front-end as parsed.
+        :type uploadOptions: str
         """
+
         board = Data.boards[port]
         pipe = board.uploadCode(code, fqbn, uploadOptions)
 
@@ -208,7 +218,8 @@ class Websocket(aobject):
 
     async def getVersion(self) -> None:
         """
-        Versiyonu Webe Gönderir
+        Sends agent version to front-end.
+        it notifies user that new version is exists.
         """
         bodyToSend = {"command": "returnVersion", "version": Data.config["AGENT_VERSION"]}
         bodyToSend = json.dumps(bodyToSend)
@@ -216,20 +227,26 @@ class Websocket(aobject):
 
     async def getCoreVersion(self) -> None:
         """
-        Core Versiyonu Webe Gönderir
+        Sends deneyap core version to front-end.
         """
         bodyToSend = {"command": "returnCoreVersion", "version": Data.config["DENEYAP_VERSION"]}
         bodyToSend = json.dumps(bodyToSend)
         await self.websocket.send(bodyToSend)
 
-    async def compile(self, fqbn:str, code:str, uploadOptions) -> None:
+    async def compile(self, fqbn:str, code:str, uploadOptions:str) -> None:
         """
-        Kodun derlenmesi için Board.compileCode() fonksiyonunu çalştıran fonksiyon
+        compiles code
 
+        :param fqbn: fully qualified board name, board name that recognized by arduino-cli
+            deneyap:esp32:dydk_mpv10 for Deneyap Kart
+            deneyap:esp32:dym_mpv10 for Deneyap Mini
+        :type fqbn: str
 
-        ID (int): kodun yükleneceği kartın ID'si
+        :param code: code that sent by front-end
+        :type code: str
 
-        code (str): kodun kendisi.
+        :param uploadOptions: upload options for board. it is board spesific and sent by front-end as parsed.
+        :type uploadOptions: str
         """
 
         pipe = Board.compileCode(code, fqbn, uploadOptions)
@@ -241,12 +258,17 @@ class Websocket(aobject):
 
     async def getBoards(self) -> None:
         """
-        Bilgisayara takılı olan güncel kartları web tarafına gönderir.
+        Sends devices that are connected to front-end
         """
+
         Board.refreshBoards()
         await Board.sendBoardInfo(self.websocket)
 
     def closeSocket(self) -> None:
+        """
+        closes device checker process
+        """
+
         logging.info("Closing DeviceChecker")
         self.deviceChecker.terminate()
         self.deviceChecker.process.join()
@@ -254,8 +276,8 @@ class Websocket(aobject):
 
     async def mainLoop(self) -> None:
         """
-        Ana döngü, her döngüde, web tarafından mesaj gelip gelmediğini kontrol eder, veri geldiyse commandParser()'a gönderir,
-        aksi halde queue'de ki komutları kontrol eder.
+        main loop for main communication. checks if there is a message send my front-end if there is sends it to commandParser function.
+        takes commands to queue then processes them.
         """
         try:
             while True:

@@ -8,10 +8,14 @@ import config
 import websockets
 
 class aobject(object):
-    """Inheriting this class allows you to define an async __init__.
+    """
+    Inheriting this class allows you to define an async __init__.
 
     So you can create objects by doing something like `await MyClass(params)`
+
+    credit:https://stackoverflow.com/questions/33128325/how-to-set-class-attribute-with-await-in-init
     """
+
     async def __new__(cls, *a, **kw):
         instance = super().__new__(cls)
         await instance.__init__(*a, **kw)
@@ -23,14 +27,18 @@ class aobject(object):
 
 class SerialMonitorWebsocket(aobject):
     """
-    Serial monitorün çalıştığı sınıf, her bir websocket bağlantısı için bir SerialMonitorWebsocket objesi oluşturulur.
-
-
-    websocket(websocket): web tarafı ile yapılan socket bağlantısının objesi
-
-    path(str):
+    For serial monitor communication, for every front-end connection, one object is created
     """
-    async def __init__(self, websocket:websockets, path:str): #TODO proper websocket typing
+
+    async def __init__(self, websocket:websockets.legacy.server.WebSocketServerProtocol, path:str):
+        """
+        :param websocket: websocket connection to front-end
+        :type websocket: websockets.legacy.server.WebSocketServerProtocol
+
+        :param path: need for websockets library to work. not used in this project
+        :type path: str
+        """
+
         logging.info(f"SerialMonitorWebsocket is object created")
 
         self.websocket = websocket
@@ -40,10 +48,12 @@ class SerialMonitorWebsocket(aobject):
 
     async def commandParser(self, body:dict) -> None:
         """
-        web tarfından gelen bilgiyi ilgili fonksiyonlara yönlendirir.
+        message send from front-end is first comes to here to redirect appropriate function
+        messages related to serial monitor comes to this class. other messages goes to Websocket class.
+        upload message is sent both this class and Websocket class. when new code is uploading serial monitor has to be closed.
 
-
-        body(dict): Json formatında gelen bir dictionary, web tarafından gelen komutu ve ilgili alanları barındırır
+        :param body: data that sent from front-end. %100 has 'command' other keys are depended on command
+        :type body: dict
         """
 
         command = body['command']
@@ -65,24 +75,27 @@ class SerialMonitorWebsocket(aobject):
 
     def serialWrite(self, text:str) -> None:
         """
-        Serial monitöre yazı yazdırır.
+        simulates arduino's serial write function
 
-
-        text(str): serial monitöre yazılacak yazı
+        :param text: string that will be send to Deneyap kart/mini.
+        :type text: str
         """
+
         if self.serialOpen:
             logging.info(f"Writing to serial, data:{text}")
             self.ser.write(text.encode("utf-8"))
 
     def openSerialMontor(self, port:str, baudRate:int) -> None:
         """
-        Serial monitörü açar.
+        opens serial monitor to communicate with deneyap kart/mini
 
+        :param port: port that board is on, like COM4
+        :type port: str
 
-        port(string): Kartın bağlı olduğu port
-
-        baudRate(int):Serial monitör için baudrate
+        :param baudRate: baud rate that serial monitor will be opened 9600, 115200 etc.
+        :type baudRate: int
         """
+
         logging.info(f"Opening serial monitor")
         if not self.serialOpen:
             self.serialOpen = True
@@ -92,23 +105,17 @@ class SerialMonitorWebsocket(aobject):
             self.ser.port = port
 
             if Data.boards[port].fqbn != config.deneyapMini:
+                #if these paramteres are not set deneyap kart restart or something when serial monitor is opened
                 self.ser.setDTR(False)
                 self.ser.setRTS(False)
 
             self.ser.open()
 
-            # self.ser = serial.Serial(
-            #     port=port,
-            #     baudrate=baudRate,
-            #     parity=serial.PARITY_NONE,
-            #     stopbits=serial.STOPBITS_ONE,
-            #     bytesize=serial.EIGHTBITS,
-            #     timeout=0)
-
     async def sendResponse(self) -> None:
         """
-        Web tarafına mesajın başarı ile alındığını geri bildirir.
+        send message back to front-end to say that message is received succesfully if this message is not send, front-end send message again.
         """
+
         bodyToSend = {"command": "response"}
         bodyToSend = json.dumps(bodyToSend)
         logging.info(f"SerialMonitorWebsocket sending response back")
@@ -116,7 +123,7 @@ class SerialMonitorWebsocket(aobject):
 
     async def closeSerialMonitor(self) -> None:
         """
-        Serial monitörü kapatır
+        closes serial monitor.
         """
         logging.info(f"Closing serial monitor")
         if self.serialOpen and self.ser != None:
@@ -129,7 +136,8 @@ class SerialMonitorWebsocket(aobject):
 
     async def serialLog(self) -> None:
         """
-        Serial monitörü okur ve websocket aracılığı ile web tarafına gönderir
+        Reads whatever serial monitor has and sends to front-end
+        if there is no delay at code, front-end fails to keep up lags
         """
         if self.serialOpen and self.ser != None:
             try:
@@ -142,15 +150,15 @@ class SerialMonitorWebsocket(aobject):
                 return
             if line == "":
                 return
-            # print(line, end="")"
             bodyToSend = {"command":"serialLog", "log":line}
             bodyToSend = json.dumps(bodyToSend)
             await self.websocket.send(bodyToSend)
 
     async def mainLoop(self) -> None:
         """
-        Ana döngü, her döngüde, web tarafından mesaj gelip gelmediğini kontrol eder, veri geldiyse commandParser()'a gönderir,
-        aksi halde serial monitör açık ise serialLog()'u çalıştırır
+        main loop for serial monitor. checks if there is a message send my front-end if there is sends it to commandParser function.
+        priorities commands over serial read from board.
+        if there is no command, then it reads serial, if it is opened.
         """
         while True:
             try:
