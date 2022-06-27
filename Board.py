@@ -23,6 +23,7 @@ class Board:
         :param fqbn: fully qualified board name, board name that recognized by arduino-cli
             deneyap:esp32:dydk_mpv10 for Deneyap Kart
             deneyap:esp32:dym_mpv10 for Deneyap Mini
+            deneyap:esp32:dydk1a_mpv10 for Deneyap Kart 1A
         :type fqbn: str
 
         :param port: COM port that board connected to like COM4
@@ -46,6 +47,7 @@ class Board:
         :param fqbn: fully qualified board name, board name that recognized by arduino-cli
             deneyap:esp32:dydk_mpv10 for Deneyap Kart
             deneyap:esp32:dym_mpv10 for Deneyap Mini
+            deneyap:esp32:dydk1a_mpv10 for Deneyap Kart 1A
         :type fqbn: str
 
         :param uploadOptions: upload options for board. it is board spesific and sent by front-end as parsed.
@@ -72,6 +74,7 @@ class Board:
         :param fqbn: fully qualified board name, board name that recognized by arduino-cli
             deneyap:esp32:dydk_mpv10 for Deneyap Kart
             deneyap:esp32:dym_mpv10 for Deneyap Mini
+            deneyap:esp32:dydk1a_mpv10 for Deneyap Kart 1A
         :type fqbn: str
 
         :param uploadOptions: upload options for board. it is board spesific and sent by front-end as parsed.

@@ -5,6 +5,7 @@ import appdirs
 
 deneyapKart = "deneyap:esp32:dydk_mpv10"
 deneyapMini = "deneyap:esp32:dym_mpv10"
+deneyapKart1A = "deneyap:esp32:dydk1a_mpv10"
 
 AGENT_VERSION = "1.0.0"
 DENEYAP_VERSION = "1.3.5"
