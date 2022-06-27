@@ -2,7 +2,10 @@
 
 This project is made for https://deneyapkart.org/deneyapkart/deneyapblok/
 
-It uses arduino-cli to interact  with Deneyap Kart/Mini.
+It uses arduino-cli to interact with
+- Deneyap Kart
+- Deneyap Mini
+- Deneyap Kart 1A
 
 Basically  this program uses websockets to connect websites front end communicates with it, parses information and utilizes arduino-cli.
 
@@ -21,8 +24,6 @@ Following functionalities are implemented:
     Changing Core Version
 
 
-I did this project solo, so don't mind commit names, lol
-
 ## How To Run
 You can basically download .exe from last release or
 
@@ -34,3 +35,5 @@ then
 ```bash
 python main.py
 ```
+
+Thanks @kinkintama
