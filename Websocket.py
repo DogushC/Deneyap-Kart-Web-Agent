@@ -4,7 +4,7 @@ import subprocess
 import os
 import config
 from DeviceChecker import DeviceChecker
-from utils import Data, downloadCore
+from utils import Data, downloadCore, updateIndex
 from Board import Board
 from multiprocessing import Queue
 import logging
@@ -163,20 +163,28 @@ class Websocket(aobject):
         """
 
         logging.info(f"Changing version to {version}")
-        error = downloadCore(version)
         bodyToSend = {"command":"versionChangeStatus", "success":True}
-        if error:
-            logging.error("Version cant be downloaded")
-            logging.error(error)
+        updateError = updateIndex()
+        if updateError:
+            logging.error("Error while updating index")
+            logging.error(updateError)
             bodyToSend["success"] = False
+            bodyToSend = json.dumps(bodyToSend)
+            await self.websocket.send(bodyToSend)
         else:
-            logging.info("version changed successfully, writing new version to config file")
-            Data.config['LIB_PATH'] = Data.config['LIB_PATH'].replace(Data.config['DENEYAP_VERSION'], version)
-            Data.config['DENEYAP_VERSION'] = version
-            Data.updateConfig()
+            error = downloadCore(version)
+            if error:
+                logging.error("Version cant be downloaded")
+                logging.error(error)
+                bodyToSend["success"] = False
+            else:
+                logging.info("version changed successfully, writing new version to config file")
+                Data.config['LIB_PATH'] = Data.config['LIB_PATH'].replace(Data.config['DENEYAP_VERSION'], version)
+                Data.config['DENEYAP_VERSION'] = version
+                Data.updateConfig()
 
-        bodyToSend = json.dumps(bodyToSend)
-        await self.websocket.send(bodyToSend)
+            bodyToSend = json.dumps(bodyToSend)
+            await self.websocket.send(bodyToSend)
 
     async def sendResponse(self) -> None:
         """
