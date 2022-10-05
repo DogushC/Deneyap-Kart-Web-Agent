@@ -155,7 +155,7 @@ def createConfig() -> dict:
             #updating config file for new version
             configFileData['DENEYAP_VERSION'] = configFileData['DENEYAP_VERSION'] if "DENEYAP_VERSION" in configFileData else InitialConfig.DENEYAP_VERSION
             configFileData['AGENT_VERSION'] = InitialConfig.AGENT_VERSION
-            configFileData['LIB_PATH'] = InitialConfig.LIB_PATH
+            configFileData['LIB_PATH'] = configFileData['LIB_PATH'] if "LIB_PATH" in configFileData else InitialConfig.LIB_PATH
 
 
             if (version != InitialConfig.AGENT_VERSION): #if new version, runs setup and updates config file
