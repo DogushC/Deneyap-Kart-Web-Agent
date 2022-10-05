@@ -126,11 +126,18 @@ class Websocket(aobject):
         :type libVersion: str
         """
 
+        updateError = updateIndex()
+        if updateError:
+            logging.error("Error while updating index")
+            logging.error(updateError)
+
+        logging.info(f"Installling Library: {libName}:{libVersion}")
         result = installLibrary(libName, libVersion)
         bodyToSend = {
             "command": "downloadLibraryResult",
             "result": result
         }
+        logging.info(f"Result: {result}")
         bodyToSend = json.dumps(bodyToSend)
         await self.websocket.send(bodyToSend)
 
@@ -145,6 +152,8 @@ class Websocket(aobject):
         :return: returns string but in json format, will be converted to json on front-end
         :rtype: str
         """
+
+        logging.info(f"Searching Library: {searchTerm}")
         libraries = searchLibrary(searchTerm)
         bodyToSend = {
             "command" : "searchLibraryResult",
