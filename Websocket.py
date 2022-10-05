@@ -247,8 +247,11 @@ class Websocket(aobject):
         """
         Sends deneyap core version to front-end.
         """
+
+        logging.info(f"Sending core version to front-end: {Data.config['DENEYAP_VERSION']}")
         bodyToSend = {"command": "returnCoreVersion", "version": Data.config["DENEYAP_VERSION"]}
         bodyToSend = json.dumps(bodyToSend)
+        await asyncio.sleep(1)
         await self.websocket.send(bodyToSend)
 
     async def compile(self, fqbn:str, code:str, uploadOptions:str) -> None:
