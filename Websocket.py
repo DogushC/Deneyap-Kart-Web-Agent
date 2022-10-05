@@ -213,6 +213,8 @@ class Websocket(aobject):
             deneyap:esp32:dydk_mpv10 for Deneyap Kart
             deneyap:esp32:dym_mpv10 for Deneyap Mini
             deneyap:esp32:dydk1a_mpv10 for Deneyap Kart 1A
+            deneyap:esp32:dyg_mpv10 for Deneyap Kart G
+
         :type fqbn: str
 
         :param port: port that device is on like COM4
@@ -262,6 +264,7 @@ class Websocket(aobject):
             deneyap:esp32:dydk_mpv10 for Deneyap Kart
             deneyap:esp32:dym_mpv10 for Deneyap Mini
             deneyap:esp32:dydk1a_mpv10 for Deneyap Kart 1A
+            deneyap:esp32:dyg_mpv10 for Deneyap Kart G
         :type fqbn: str
 
         :param code: code that sent by front-end
