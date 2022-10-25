@@ -62,7 +62,12 @@ class Board:
 
         logging.info(f"Uploading code to {self.boardName}:{self.port}")
         createInoFile(code) #create Ino file so arduino-cli can read it to compile and upload to board
-        pipe = executeCliPipe(f"compile --port {self.port} --upload --fqbn {fqbn}:{uploadOptions} {config.TEMP_PATH}/tempCode")
+
+        if uploadOptions == '':
+            pipe = executeCliPipe(f"compile --port {self.port} --upload --fqbn {fqbn} {config.TEMP_PATH}/tempCode")
+        else:
+            pipe = executeCliPipe(f"compile --port {self.port} --upload --fqbn {fqbn}:{uploadOptions} {config.TEMP_PATH}/tempCode")
+
         return pipe
 
     @staticmethod
@@ -89,7 +94,12 @@ class Board:
 
         logging.info(f"Compiling code for {fqbn}")
         createInoFile(code)  #create Ino file so arduino-cli can read it to compile
-        pipe = executeCliPipe(f"compile --fqbn {fqbn}:{uploadOptions} {config.TEMP_PATH}/tempCode")
+
+        if uploadOptions == '':
+            pipe = executeCliPipe(f"compile --fqbn {fqbn} {config.TEMP_PATH}/tempCode")
+        else:
+            pipe = executeCliPipe(f"compile --fqbn {fqbn}:{uploadOptions} {config.TEMP_PATH}/tempCode")
+
         return pipe
 
     @staticmethod
