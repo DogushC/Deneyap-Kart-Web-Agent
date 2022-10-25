@@ -132,11 +132,11 @@ function messageParser(received_msg) {
 }
 
 function getLastVersion() {
-  return "1.0.0";
+  return "1.0.1";
 }
 
 function getLastVersionLink() {
-  return "DeneyapKartWebSetupv1.0.0.exe";
+  return "DeneyapKartWebSetupv1.0.1.exe";
 }
 
 function sleep(ms) {
