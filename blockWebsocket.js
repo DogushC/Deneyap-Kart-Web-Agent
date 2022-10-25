@@ -183,7 +183,7 @@ function uploadCode() {
   $("#toggle").slideUp();
 
   var selectedPort = document.getElementById("port").value;
-  var selectedBoard = document.getElementById("kart").value;
+  var selectedBoard = document.getElementById("boards").value;
   var textArea = document.getElementById("consoleLog");
   textArea.replaceChildren();
   var txt = document.createTextNode("Compiling Code...");
@@ -209,7 +209,7 @@ function compileCode() {
   $("#toggle").slideUp();
 
   var selectedPort = document.getElementById("port").value;
-  var selectedBoard = document.getElementById("kart").value;
+  var selectedBoard = document.getElementById("boards").value;
   var textArea = document.getElementById("consoleLog");
   textArea.replaceChildren();
   var txt = document.createTextNode("Compiling Code...");
