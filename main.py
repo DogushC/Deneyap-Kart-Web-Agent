@@ -118,10 +118,10 @@ def createConfig() -> dict:
 
     isConfigExists = os.path.exists(f'{InitialConfig.CONFIG_PATH}\config.json')
     configFileData = {
-        "deneyapKart": "deneyap:esp32:dydk_mpv10",
-        "deneyapMini": "deneyap:esp32:dym_mpv10",
-        "deneyapKart1A": "deneyap:esp32:dydk1a_mpv10",
-        "deneyapKartG": "deneyap:esp32:dyg_mpv10";
+        "deneyapKart": "dydk_mpv10",
+        "deneyapMini": "dym_mpv10",
+        "deneyapKart1A": "dydk1a_mpv10",
+        "deneyapKartG": "dyg_mpv10";
 
         "AGENT_VERSION": InitialConfig.AGENT_VERSION,
         "DENEYAP_VERSION": InitialConfig.DENEYAP_VERSION,

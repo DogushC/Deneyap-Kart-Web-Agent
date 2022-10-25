@@ -210,10 +210,10 @@ class Websocket(aobject):
         Compiles and uploads code to board
 
         :param fqbn: fully qualified board name, board name that recognized by arduino-cli
-            deneyap:esp32:dydk_mpv10 for Deneyap Kart
-            deneyap:esp32:dym_mpv10 for Deneyap Mini
-            deneyap:esp32:dydk1a_mpv10 for Deneyap Kart 1A
-            deneyap:esp32:dyg_mpv10 for Deneyap Kart G
+            dydk_mpv10 for Deneyap Kart
+            dym_mpv10 for Deneyap Mini
+            dydk1a_mpv10 for Deneyap Kart 1A
+            dyg_mpv10 for Deneyap Kart G
 
         :type fqbn: str
 
@@ -261,10 +261,10 @@ class Websocket(aobject):
         compiles code
 
         :param fqbn: fully qualified board name, board name that recognized by arduino-cli
-            deneyap:esp32:dydk_mpv10 for Deneyap Kart
-            deneyap:esp32:dym_mpv10 for Deneyap Mini
-            deneyap:esp32:dydk1a_mpv10 for Deneyap Kart 1A
-            deneyap:esp32:dyg_mpv10 for Deneyap Kart G
+            dydk_mpv10 for Deneyap Kart
+            dym_mpv10 for Deneyap Mini
+            dydk1a_mpv10 for Deneyap Kart 1A
+            dyg_mpv10 for Deneyap Kart G
         :type fqbn: str
 
         :param code: code that sent by front-end
