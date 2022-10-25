@@ -121,7 +121,7 @@ def createConfig() -> dict:
         "deneyapKart": "dydk_mpv10",
         "deneyapMini": "dym_mpv10",
         "deneyapKart1A": "dydk1a_mpv10",
-        "deneyapKartG": "dyg_mpv10";
+        "deneyapKartG": "dyg_mpv10",
 
         "AGENT_VERSION": InitialConfig.AGENT_VERSION,
         "DENEYAP_VERSION": InitialConfig.DENEYAP_VERSION,
