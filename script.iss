@@ -2,7 +2,7 @@
 ; SEE THE DOCUMENTATION FOR DETAILS ON CREATING INNO SETUP SCRIPT FILES!
 
 #define MyAppName "Deneyap Kart Web"
-#define MyAppVersion "1.0.0"
+#define MyAppVersion "1.0.1"
 #define MyAppPublisher "Türkiye Teknoloji Takımı"
 #define MyAppURL "https://deneyapkart.org"
 #define MyAppExeName "Deneyap Kart Web.exe"
@@ -20,12 +20,12 @@ AppSupportURL={#MyAppURL}
 AppUpdatesURL={#MyAppURL}
 DefaultDirName={autopf}\{#MyAppName}
 DisableProgramGroupPage=yes
-LicenseFile=C:\Users\Kinkintama\Documents\GitHub\Deneyap-Kart-Web-Agent\LICENSE
+LicenseFile=C:\xampp\htdocs\Deneyap-Kart-Web-Agent\LICENSE
 ; Uncomment the following line to run in non administrative install mode (install for current user only.)
 ;PrivilegesRequired=lowest
-OutputDir=C:\Users\Kinkintama\Desktop\Deneyap\DeneyapKartSetup
-OutputBaseFilename=DeneyapKartWebSetupv1.0.0
-SetupIconFile=C:\Users\Kinkintama\Documents\GitHub\Deneyap-Kart-Web-Agent\icon.ico
+OutputDir=C:\xampp\htdocs\Deneyap-Kart-Web-Agent\
+OutputBaseFilename=DeneyapKartWebSetupv1.0.1
+SetupIconFile=C:\xampp\htdocs\Deneyap-Kart-Web-Agent\icon.ico
 Compression=lzma
 SolidCompression=yes
 WizardStyle=modern
@@ -38,8 +38,8 @@ Name: "turkish"; MessagesFile: "compiler:Languages\Turkish.isl"
 Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{cm:AdditionalIcons}"; Flags: unchecked
 
 [Files]
-Source: "C:\Users\Kinkintama\Documents\GitHub\Deneyap-Kart-Web-Agent\dist\{#MyAppExeName}"; DestDir: "{app}"; Flags: ignoreversion
-Source: "C:\Users\Kinkintama\Documents\GitHub\Deneyap-Kart-Web-Agent\dist\main\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: "C:\xampp\htdocs\Deneyap-Kart-Web-Agent\dist\{#MyAppExeName}"; DestDir: "{app}"; Flags: ignoreversion
+Source: "C:\xampp\htdocs\Deneyap-Kart-Web-Agent\dist\main\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 
 [Icons]
