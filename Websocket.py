@@ -96,10 +96,10 @@ class Websocket(aobject):
             await self.sendResponse()
 
         if command == "upload":
-            fqbn = self.fixFqbn(body['borad'])
+            fqbn = self.fixFqbn(body['board'])
             await self.upload(fqbn, body['port'], body["code"], body['uploadOptions'])
         elif command == "compile":
-            fqbn = self.fixFqbn(body['borad'])
+            fqbn = self.fixFqbn(body['board'])
             await self.compile(fqbn, body["code"], body['uploadOptions'])
         elif command == "getBoards":
             await self.getBoards()
