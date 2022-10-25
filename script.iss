@@ -20,12 +20,12 @@ AppSupportURL={#MyAppURL}
 AppUpdatesURL={#MyAppURL}
 DefaultDirName={autopf}\{#MyAppName}
 DisableProgramGroupPage=yes
-LicenseFile=C:\xampp\htdocs\Deneyap-Kart-Web-Agent\LICENSE
+LicenseFile=C:/Users/dc/Desktop/Deneyap-Kart-Web-Agent/LICENSE
 ; Uncomment the following line to run in non administrative install mode (install for current user only.)
 ;PrivilegesRequired=lowest
-OutputDir=C:\xampp\htdocs\Deneyap-Kart-Web-Agent\
+OutputDir=C:/Users/dc/Desktop
 OutputBaseFilename=DeneyapKartWebSetupv1.0.1
-SetupIconFile=C:\xampp\htdocs\Deneyap-Kart-Web-Agent\icon.ico
+SetupIconFile=C:/Users/dc/Desktop/Deneyap-Kart-Web-Agent/icon.ico
 Compression=lzma
 SolidCompression=yes
 WizardStyle=modern
@@ -38,8 +38,8 @@ Name: "turkish"; MessagesFile: "compiler:Languages\Turkish.isl"
 Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{cm:AdditionalIcons}"; Flags: unchecked
 
 [Files]
-Source: "C:\xampp\htdocs\Deneyap-Kart-Web-Agent\dist\{#MyAppExeName}"; DestDir: "{app}"; Flags: ignoreversion
-Source: "C:\xampp\htdocs\Deneyap-Kart-Web-Agent\dist\main\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: "C:/Users/dc/Desktop/Deneyap-Kart-Web-Agent/dist/{#MyAppExeName}"; DestDir: "{app}"; Flags: ignoreversion
+Source: "C:/Users/dc/Desktop/Deneyap-Kart-Web-Agent/dist/main/*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 
 [Icons]
@@ -49,4 +49,3 @@ Name: "{userstartup}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"
 
 [Run]
 Filename: "{app}\{#MyAppExeName}"; Description: "{cm:LaunchProgram,{#StringChange(MyAppName, '&', '&&')}}"; Flags: nowait postinstall skipifsilent
-
