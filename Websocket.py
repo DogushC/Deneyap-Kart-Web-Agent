@@ -96,9 +96,11 @@ class Websocket(aobject):
             await self.sendResponse()
 
         if command == "upload":
-            await self.upload(body['board'], body['port'], body["code"], body['uploadOptions'])
+            fqbn = self.fixFqbn(body['borad'])
+            await self.upload(fqbn, body['port'], body["code"], body['uploadOptions'])
         elif command == "compile":
-            await self.compile(body['board'], body["code"], body['uploadOptions'])
+            fqbn = self.fixFqbn(body['borad'])
+            await self.compile(fqbn, body["code"], body['uploadOptions'])
         elif command == "getBoards":
             await self.getBoards()
         elif command == "getVersion":
@@ -116,6 +118,18 @@ class Websocket(aobject):
         elif command == "getCoreVersion":
             await self.getCoreVersion()
 
+    def fixFqbn(self, fqbn:str, prefix :str = "deneyap:esp32:") -> str:
+        """
+        In case prefix is not in fqbn adds it.
+
+        :param fqbn: fully qualified board name
+        :type fqbn: str
+
+        :param prefix: prefix that going to be checked
+        :type prefix: str
+        """
+
+        return fqbn if fqbn.startswith(prefix) else prefix+fqbn
 
     async def downloadLibrary(self, libName:str, libVersion:str)->None:
         """
