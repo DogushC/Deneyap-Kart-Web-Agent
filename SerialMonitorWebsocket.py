@@ -104,12 +104,19 @@ class SerialMonitorWebsocket(aobject):
             self.ser.baudrate = baudRate
             self.ser.port = port
 
-            if Data.boards[port].fqbn != config.deneyapMini:
+            if Data.boards[port].fqbn == config.deneyapKart || config.deneyapKart1A:
                 #if these paramteres are not set deneyap kart restart or something when serial monitor is opened
                 self.ser.setDTR(False)
                 self.ser.setRTS(False)
 
             self.ser.open()
+
+            if Data.boards[port].fqbn == config.deneyapKartG || config.deneyapMini:
+                    #if these paramteres are not set deneyap kart restart or something when serial monitor is opened
+                    self.ser.setDTR(True)
+                    self.ser.setRTS(True)
+
+                self.ser.open()
 
     async def sendResponse(self) -> None:
         """
