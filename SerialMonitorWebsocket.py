@@ -104,23 +104,22 @@ class SerialMonitorWebsocket(aobject):
             self.ser.baudrate = baudRate
             self.ser.port = port
 
-#if these paramteres are not set deneyap kart restart or something when serial monitor is opened
-            if Data.boards[port].fqbn == config.deneyapKart:
+            if Data.boards[port] == config.deneyapKart:
                 self.ser.setDTR(False)
                 self.ser.setRTS(False)
                 self.ser.open()
 
-            if Data.boards[port].fqbn == config.deneyapKart1A:
+            elif Data.boards[port] == config.deneyapKart1A:
                 self.ser.setDTR(False)
                 self.ser.setRTS(False)
                 self.ser.open()
 
-            if Data.boards[port].fqbn == config.deneyapMini:
-                 self.ser.setDTR(True)
-                 self.ser.setRTS(True)
-                 self.ser.open()
+            elif Data.boards[port] == config.deneyapKartG:
+                self.ser.setDTR(True)
+                self.ser.setRTS(True)
+                self.ser.open()
 
-            if Data.boards[port].fqbn == config.deneyapKartG:
+            else:
                  self.ser.setDTR(True)
                  self.ser.setRTS(True)
                  self.ser.open()
