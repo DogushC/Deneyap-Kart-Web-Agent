@@ -147,14 +147,12 @@ def setupDeneyap() -> (bool, str):
         logging.info("package_deneyapkart_index.json is not found on config, adding it")
         executeCli("config add board_manager.additional_urls https://raw.githubusercontent.com/deneyapkart/deneyapkart-arduino-core/master/package_deneyapkart_index.json")
         logging.info("added package_deneyapkart_index.json to config")
-
     if not ("DeneyapKartWeb" in string):
         logging.info("directories is not set, setting it.")
         executeCli(f"config set directories.data {Data.config['CONFIG_PATH']}")
         executeCli(f"config set directories.downloads {Data.config['CONFIG_PATH']}\staging")
         executeCli(f"config set directories.user {Data.config['CONFIG_PATH']}\packages\deneyap\hardware\esp32\{Data.config['DENEYAP_VERSION']}\ArduinoLibraries")
         logging.info("directories are changed")
-
     else:
         logging.info("package_deneyapkart_index.json is found on config skipping this step")
 
@@ -187,4 +185,3 @@ def setupDeneyap() -> (bool, str):
 
     process.terminate()
     return True,1
-

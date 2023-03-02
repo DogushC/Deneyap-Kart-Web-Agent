@@ -1,7 +1,7 @@
 from tkinter import Tk, Label
 import time
 
-base = "Deneyap Kart core ve kütüphaneleri indirliyor. bu işlem biraz zaman alabilir"
+base = "Deneyap Elektronik Geliştirme Kart'ları kütüphaneleri indiriliyor. Lütfen bekleyiniz."
 lbl = ""
 window = ""
 

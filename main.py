@@ -34,8 +34,8 @@ def sysIconThread() -> None:
         icon.stop()
         _thread.interrupt_main()
 
-    menu = (MenuItem(f'Deneyap Kart Web Version: {Data.config["AGENT_VERSION"]}', lambda x:x, enabled=False),
-            # MenuItem(f'Deneyap Core Version: {Data.config["DENEYAP_VERSION"]}', lambda x: x, enabled=False),
+    menu = (MenuItem(f'Deneyap Kart Web Versiyonu: {Data.config["AGENT_VERSION"]}', lambda x:x, enabled=False),
+            MenuItem(f'Deneyap Kütüphane Versiyonu: {Data.config["DENEYAP_VERSION"]}', lambda x: x, enabled=False),
             MenuItem('Siteye Git', goToWebsite),
             MenuItem('Kütüphanelere Git', goToLib),
             MenuItem('Log Dosyasını Aç', goToLogFile),
@@ -122,6 +122,8 @@ def createConfig() -> dict:
         "deneyapMini": "dym_mpv10",
         "deneyapKart1A": "dydk1a_mpv10",
         "deneyapKartG": "dyg_mpv10",
+        "deneyapMiniv2": "dym_mpv20",
+        "deneyapKart1Av2": "dydk1a_mpv20",
 
         "AGENT_VERSION": InitialConfig.AGENT_VERSION,
         "DENEYAP_VERSION": InitialConfig.DENEYAP_VERSION,

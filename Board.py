@@ -25,8 +25,10 @@ class Board:
             dym_mpv10 for Deneyap Mini
             dydk1a_mpv10 for Deneyap Kart 1A
             dyg_mpv10 for Deneyap Kart G
-        :type fqbn: str
+            dym_mpv20 for Deneyap Mini v2
+            dydk1a_mpv20 for Deneyap Kart 1A v2
 
+        :type fqbn: str
         :param port: COM port that board connected to like COM4
         :type port: str
 
@@ -116,7 +118,7 @@ class Board:
             if "matching_boards" in boardJson:
                 boardName = boardJson["matching_boards"][0]["name"]  # TODO investigate why index 0?
                 boardId = boardJson["matching_boards"][0]["fqbn"]
-            else:#deneyap mini is goes in to here.
+            else:
                 boardName = "Unknown"
                 boardId = ""
 

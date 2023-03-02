@@ -228,6 +228,8 @@ class Websocket(aobject):
             dym_mpv10 for Deneyap Mini
             dydk1a_mpv10 for Deneyap Kart 1A
             dyg_mpv10 for Deneyap Kart G
+            dym_mpv20 for Deneyap Mini v2
+            dydk1a_mpv20 for Deneyap Kart 1A v2
 
         :type fqbn: str
 
@@ -279,8 +281,10 @@ class Websocket(aobject):
             dym_mpv10 for Deneyap Mini
             dydk1a_mpv10 for Deneyap Kart 1A
             dyg_mpv10 for Deneyap Kart G
+            dym_mpv20 for Deneyap Mini v2
+            dydk1a_mpv20 for Deneyap Kart 1A v2
+                   
         :type fqbn: str
-
         :param code: code that sent by front-end
         :type code: str
 
