@@ -52,6 +52,8 @@ class Board:
             dym_mpv10 for Deneyap Mini
             dydk1a_mpv10 for Deneyap Kart 1A
             dyg_mpv10 for Deneyap Kart G
+            dym_mpv20 for Deneyap Mini v2
+            dydk1a_mpv20 for Deneyap Kart 1A v2
         :type fqbn: str
 
         :param uploadOptions: upload options for board. it is board spesific and sent by front-end as parsed.

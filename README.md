@@ -7,6 +7,8 @@ It uses arduino-cli to interact with
 - Deneyap Mini
 - Deneyap Kart 1A
 - Deneyap Kart G
+- Deneyap Mini v2
+- Deneyap Kart 1A v2
 
 Basically  this program uses websockets to connect websites front end communicates with it, parses information and utilizes arduino-cli.
 
