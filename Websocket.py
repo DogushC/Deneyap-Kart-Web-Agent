@@ -136,7 +136,7 @@ class Websocket(aobject):
         :param libName: full name of the library
         :type libName: str
 
-        :param libVersion: version of the library, like 1.3.4
+        :param libVersion: version of the library, like 1.3.12
         :type libVersion: str
         """
 
@@ -283,7 +283,7 @@ class Websocket(aobject):
             dyg_mpv10 for Deneyap Kart G
             dym_mpv20 for Deneyap Mini v2
             dydk1a_mpv20 for Deneyap Kart 1A v2
-                   
+
         :type fqbn: str
         :param code: code that sent by front-end
         :type code: str

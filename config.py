@@ -11,7 +11,7 @@ deneyapMiniv2 = "dym_mpv20"
 deneyapKart1Av2 = "dydk1a_mpv20"
 
 AGENT_VERSION = "1.0.2"
-DENEYAP_VERSION = "1.3.11"
+DENEYAP_VERSION = "1.3.12"
 TEMP_PATH = f"{appdirs.user_data_dir()}\DeneyapKartWeb\Temp"
 CONFIG_PATH = f"{appdirs.user_data_dir()}\DeneyapKartWeb"
 LOG_PATH = f"{appdirs.user_data_dir()}\DeneyapKartWeb"

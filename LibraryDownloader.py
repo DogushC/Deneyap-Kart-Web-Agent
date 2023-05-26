@@ -20,7 +20,7 @@ def installLibrary(name:str, version:str) -> str:
     :param name: full name of the library
     :type name: str
 
-    :param version: version of the library, like 1.3.4
+    :param version: version of the library, like 1.3.12
     :type version: str
 
     :return: returns subprocess output which is result of arduino-cli execution
@@ -37,6 +37,3 @@ def installLibraryZip(zipPath:str) -> str:
     """
     raise NotImplemented
     #TODO install from zip
-
-
-
