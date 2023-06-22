@@ -119,6 +119,21 @@ class SerialMonitorWebsocket(aobject):
                 self.ser.setRTS(True)
                 self.ser.open()
 
+            elif Data.boards[port] == config.deneyapMini:
+                self.ser.setDTR(True)
+                self.ser.setRTS(True)
+                self.ser.open()
+
+            elif Data.boards[port] == config.deneyapMiniv2:
+                self.ser.setDTR(True)
+                self.ser.setRTS(True)
+                self.ser.open()
+
+            elif Data.boards[port] == config.deneyapKart1Av2:
+                self.ser.setDTR(True)
+                self.ser.setRTS(True)
+                self.ser.open()
+                
             else:
                  self.ser.setDTR(True)
                  self.ser.setRTS(True)
